@@ -196,13 +196,13 @@
 
       function reiniciar() {
         mesas = [];
-        for (let i = 1; i <= 10; i++) mesas.push(i);
+        for (let i = 1; i <= 5; i++) mesas.push(i);
         actualizarRestantes();
         desarmar();
       }
 
       function actualizarRestantes() {
-        restEl.textContent = `Mesas restantes: ${mesas.length}/10`;
+        restEl.textContent = `Mesas restantes: ${mesas.length}/5`;
       }
 
       function cerrarModal() {
