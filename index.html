@@ -19,147 +19,76 @@
       body {
         margin: 0;
         height: 100vh;
-
-        background:
-          radial-gradient(
-            circle at top,
-            rgba(235, 242, 255, 0.92),
-            rgba(255, 255, 255, 0.96) 58%
-          ),
-          linear-gradient(135deg, #f8fbff, #eef4ff);
+        background: linear-gradient(135deg, #f8fbff, #eef4ff);
 
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
 
         font-family: Arial, sans-serif;
         color: var(--azul);
         text-align: center;
+
         overflow: hidden;
         position: relative;
       }
 
-      /* =========================
-         IMAGEN FONDO
-      ========================= */
-
       .imagen-fondo {
         position: fixed;
-
         inset: 0;
-
         width: 100vw;
         height: 100vh;
-
         object-fit: contain;
         object-position: center;
-
-        opacity: 0.11;
-
-        filter: grayscale(1) contrast(1.1);
-
-        z-index: -2;
-
+        opacity: 0.26;
+        filter: grayscale(1) contrast(1.15);
+        z-index: -3;
         pointer-events: none;
-
         transform: scale(1.08) rotate(-6deg);
       }
 
-      /* Glow suave */
-
-      .bg-light {
-        position: fixed;
-
-        width: 760px;
-        height: 760px;
-
-        border-radius: 50%;
-
-        background: radial-gradient(
-          circle,
-          rgba(30, 60, 114, 0.12),
-          transparent 68%
-        );
-
-        z-index: -1;
-
-        animation: glow 7s ease-in-out infinite;
-      }
-
-      @keyframes glow {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 0.7;
-        }
-
-        50% {
-          transform: scale(1.12);
-          opacity: 1;
-        }
-      }
-
-      /* =========================
-         WRAP
-      ========================= */
-
       .wrap {
         width: min(1100px, 92vw);
-
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 18px;
       }
-
-      /* =========================
-         CARD
-      ========================= */
 
       .card {
         width: 100%;
+        padding: 24px 28px 30px;
+        border-radius: 36px;
 
-        border: 2px solid rgba(30, 60, 114, 0.1);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.14),
+          rgba(255, 255, 255, 0.06)
+        );
 
-        border-radius: 30px;
-
-        padding: 30px 24px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
 
         box-shadow:
-          0 24px 60px rgba(30, 60, 114, 0.14),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+          0 18px 55px rgba(0, 0, 0, 0.06),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 
-        background: rgba(255, 255, 255, 0.74);
-
-        backdrop-filter: blur(14px);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
       }
-
-      /* =========================
-         DADO 3D
-      ========================= */
 
       .scene {
         width: 250px;
         height: 250px;
-
         margin: 0 auto 26px;
-
         perspective: 1200px;
       }
 
       .dice {
         width: 200px;
         height: 200px;
-
         position: relative;
-
         margin: 20px auto;
-
         transform-style: preserve-3d;
-
         transform: rotateX(-24deg) rotateY(-38deg) rotateZ(2deg);
-
         transition: transform 1.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
       }
 
@@ -179,13 +108,15 @@
 
       .face {
         position: absolute;
-
         width: 200px;
         height: 200px;
-
         border-radius: 30px;
 
-        background: linear-gradient(145deg, #ffffff, #dce9ff);
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.96),
+          rgba(220, 233, 255, 0.92)
+        );
 
         border: 4px solid rgba(30, 60, 114, 0.14);
 
@@ -199,7 +130,6 @@
 
         font-size: 82px;
         font-weight: 900;
-
         color: var(--azul);
       }
 
@@ -222,20 +152,16 @@
         transform: rotateX(-90deg) translateZ(100px);
       }
 
-      /* =========================
-         TEXTOS
-      ========================= */
-
       #mesa {
         font-size: clamp(44px, 6vw, 92px);
-
         font-weight: 900;
-
         letter-spacing: 1px;
-
         margin: 6px 0 8px;
-
         transition: transform 0.2s ease;
+
+        text-shadow:
+          0 4px 0 rgba(255, 255, 255, 0.95),
+          0 14px 30px rgba(255, 255, 255, 0.9);
       }
 
       #mesa.pop {
@@ -244,32 +170,25 @@
 
       #mensaje {
         font-size: clamp(18px, 2.2vw, 34px);
-
         color: var(--gris);
-
         margin: 0 0 10px;
-
         min-height: 1.4em;
+
+        text-shadow: 0 8px 24px rgba(255, 255, 255, 0.95);
       }
 
       #fraseAudio {
         margin: 14px auto 16px;
-
-        max-width: 850px;
-
+        max-width: 900px;
         min-height: 2em;
-
         font-size: clamp(18px, 2vw, 28px);
-
         color: var(--azul);
-
         font-weight: 800;
-
         opacity: 0;
-
         transform: translateY(8px);
-
         transition: all 0.35s ease;
+
+        text-shadow: 0 8px 24px rgba(255, 255, 255, 0.95);
       }
 
       #fraseAudio.show {
@@ -279,31 +198,22 @@
 
       .meta {
         font-size: clamp(14px, 1.6vw, 20px);
-
-        color: rgba(30, 60, 114, 0.7);
-
+        color: rgba(30, 60, 114, 0.78);
         margin-top: 10px;
-      }
 
-      /* =========================
-         BOTÓN
-      ========================= */
+        text-shadow: 0 8px 24px rgba(255, 255, 255, 0.95);
+      }
 
       .btn {
         font-size: clamp(22px, 3vw, 42px);
-
         padding: 18px 54px;
-
         border: none;
-
         border-radius: 20px;
 
         background: linear-gradient(135deg, var(--azul), var(--azul2));
 
         color: white;
-
         cursor: pointer;
-
         font-weight: 800;
 
         box-shadow: 0 16px 32px rgba(30, 60, 114, 0.24);
@@ -318,27 +228,17 @@
       .btn.secondary {
         background: white;
         color: var(--azul);
-
         border: 2px solid rgba(30, 60, 114, 0.25);
-
         box-shadow: none;
       }
-
-      /* =========================
-         MODAL
-      ========================= */
 
       .overlay {
         position: fixed;
         inset: 0;
-
         background: rgba(0, 0, 0, 0.55);
-
         display: none;
-
         align-items: center;
         justify-content: center;
-
         padding: 22px;
       }
 
@@ -348,31 +248,22 @@
 
       .modal {
         width: min(760px, 92vw);
-
         background: white;
-
         border-radius: 24px;
-
         padding: 26px;
-
         box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
-
         text-align: center;
       }
 
       .modal h2 {
         margin: 0 0 10px;
-
         font-size: clamp(26px, 3.4vw, 44px);
-
         color: var(--azul);
       }
 
       .modal p {
         margin: 0 0 18px;
-
         font-size: clamp(16px, 2.1vw, 24px);
-
         color: var(--gris);
       }
 
@@ -384,35 +275,24 @@
         margin-top: 12px;
       }
 
-      /* =========================
-         CONFETI
-      ========================= */
-
       .spark {
         position: fixed;
-
         width: 10px;
         height: 10px;
-
         border-radius: 3px;
-
         background: rgba(30, 60, 114, 0.35);
-
         animation: fall 900ms ease-out forwards;
-
         pointer-events: none;
       }
 
       @keyframes fall {
         from {
           transform: translateY(-20px) rotate(0deg);
-
           opacity: 1;
         }
 
         to {
           transform: translateY(140px) rotate(180deg);
-
           opacity: 0;
         }
       }
@@ -420,14 +300,10 @@
   </head>
 
   <body>
-    <!-- IMAGEN FONDO -->
     <img class="imagen-fondo" src="descarga.png" alt="Conciénciate" />
-
-    <div class="bg-light"></div>
 
     <div class="wrap">
       <div class="card">
-        <!-- DADO -->
         <div class="scene">
           <div class="dice" id="dice">
             <div class="face front">1</div>
@@ -453,7 +329,6 @@
 
     <audio id="audioSorteo" preload="auto"></audio>
 
-    <!-- MODAL -->
     <div class="overlay" id="overlay">
       <div class="modal">
         <h2>✅ Mesas asignadas</h2>
@@ -465,7 +340,6 @@
 
         <div class="actions">
           <button class="btn" onclick="reiniciarTodo()">REINICIAR</button>
-
           <button class="btn secondary" onclick="cerrarModal()">CERRAR</button>
         </div>
       </div>
@@ -477,47 +351,85 @@
       let timerArmado = null;
 
       const dice = document.getElementById("dice");
-
       const mesaEl = document.getElementById("mesa");
-
       const msgEl = document.getElementById("mensaje");
-
       const fraseAudioEl = document.getElementById("fraseAudio");
-
       const restEl = document.getElementById("restantes");
-
       const btn = document.getElementById("btn");
-
       const overlay = document.getElementById("overlay");
 
-      const frases = [
-        "El dado viene fuerte hoy.",
+      /*
+        Preparado para audio futuro:
+        Cada frase usa datos reales:
+        {salida} = mesa que acaba de salir
+        {quedan} = mesas que quedan
+        {queda} = mesa que queda cuando solo queda una
+        {primeraRestante} y {segundaRestante} = cuando quedan dos
+      */
 
-        "Aquí ya hay gente haciendo cálculos mentales.",
+      const frasesPorEstado = {
+        quedan4: [
+          "Sale la mesa {salida}. Primera en salir, primera en cenar. El dado ya ha marcado territorio.",
+          "Mesa {salida} asignada. Empieza fuerte la noche y quedan las mesas {quedan} esperando turno.",
+          "La mesa {salida} ya puede respirar tranquila. Las mesas {quedan} siguen mirando al dado con respeto.",
+          "Primera elegida: mesa {salida}. Esto acaba de empezar y el dado ya se cree presentador de televisión.",
+          "Mesa {salida} fuera. Quedan {quedan}. Todavía hay margen para hacerse el interesante.",
+          "Arranca la mesa {salida}. Las demás, {quedan}, siguen en modo paciencia profesional.",
+          "La mesa {salida} se adelanta. Las mesas {quedan} acaban de descubrir que esto iba en serio.",
+          "Mesa {salida} asignada. El dado ha hablado poco, pero ha hablado claro.",
+        ],
 
-        "Esto empieza a ponerse interesante.",
+        quedan3: [
+          "Sale la mesa {salida}. Quedan las mesas {quedan}, y aquí ya empiezan los cálculos de ingeniería.",
+          "Mesa {salida} servida por el destino. Las mesas {quedan} siguen en la sala de espera del dado.",
+          "La mesa {salida} avanza. Quedan {quedan}, y el suspense está siendo totalmente innecesario.",
+          "Mesa {salida} asignada. Las mesas {quedan} empiezan a pensar que el dado tiene favoritos.",
+          "Sale la mesa {salida}. Quedan {quedan}. Esto ya parece una eliminatoria absurda pero emocionante.",
+          "La mesa {salida} ya tiene vía libre. Las mesas {quedan} siguen aguantando el tipo.",
+          "Mesa {salida} fuera. Quedan {quedan}. El dado está disfrutando demasiado de este momento.",
+          "Sale la mesa {salida}. Las mesas {quedan} siguen vivas en esta competición gastronómica.",
+        ],
 
-        "El algoritmo no conoce amistades.",
+        quedan2: [
+          "Sale la mesa {salida}. Quedan la mesa {primeraRestante} y la mesa {segundaRestante}. Una cenará antes, la otra con más suspense.",
+          "Mesa {salida} asignada. Ahora quedan {primeraRestante} y {segundaRestante}. Aquí se come seguro, pero alguien va a practicar paciencia.",
+          "Sale la mesa {salida}. Solo quedan dos: {primeraRestante} y {segundaRestante}. El dado ya está haciendo teatro.",
+          "Mesa {salida} fuera. Quedan {primeraRestante} y {segundaRestante}. Esto ya es cara o cruz con mantel.",
+          "La mesa {salida} se adelanta. Las mesas {primeraRestante} y {segundaRestante} siguen mirándose como finalistas.",
+          "Mesa {salida} asignada. Quedan {primeraRestante} y {segundaRestante}. Una sale ahora y la otra se come el final dramático.",
+          "Sale la mesa {salida}. Quedan {primeraRestante} y {segundaRestante}. El dado está alargando esto por puro espectáculo.",
+          "Mesa {salida} lista. Las mesas {primeraRestante} y {segundaRestante} acaban de entrar en modo final de torneo.",
+        ],
 
-        "El suspense está completamente innecesario… y funciona.",
+        queda1: [
+          "Sale la mesa {salida}. Solo queda la mesa {queda}. La última cena, pero con entrada triunfal.",
+          "Mesa {salida} asignada. Queda la mesa {queda}. Se ha guardado el protagonismo para el final.",
+          "Sale la mesa {salida}. La mesa {queda} queda para el cierre. Alguien tenía que poner el drama.",
+          "Mesa {salida} fuera. Solo queda la mesa {queda}. Va a cenar la última, pero con categoría.",
+          "La mesa {salida} ya está dentro. La mesa {queda} se queda como final de temporada.",
+          "Sale la mesa {salida}. Queda la mesa {queda}. Ya no es espera, es escena final.",
+          "Mesa {salida} asignada. La mesa {queda} se queda sola ante el dado, como en una película.",
+          "Sale la mesa {salida}. Última pendiente: mesa {queda}. Está tardando, pero está quedando elegante.",
+        ],
 
-        "Cada clic cambia destinos.",
-
-        "Esto ya parece una final.",
-
-        "El dado ha hablado.",
-      ];
+        final: [
+          "Última mesa: la {salida}. Cierra el sorteo tarde, pero con aplausos imaginarios.",
+          "Y termina la mesa {salida}. Ha sido la última, sí, pero también la más cinematográfica.",
+          "Mesa {salida} para cerrar. El dado se despide como si hubiera hecho una obra maestra.",
+          "Última asignada: mesa {salida}. Se acabó el suspense y empieza lo importante.",
+          "Cierra la mesa {salida}. El dado ha trabajado duro y ahora exige reconocimiento.",
+          "Mesa {salida}, final del recorrido. Llegó tarde, pero llegó con estilo.",
+          "Y la última es la mesa {salida}. Final elegante para un sorteo absurdamente emocionante.",
+          "Mesa {salida} cerrando el evento. El algoritmo cocinó el drama hasta el último segundo.",
+        ],
+      };
 
       const posicionesDado = {
-        1: "rotateX(0deg) rotateY(0deg)",
-
-        2: "rotateX(0deg) rotateY(-90deg)",
-
-        3: "rotateX(0deg) rotateY(180deg)",
-
-        4: "rotateX(0deg) rotateY(90deg)",
-
-        5: "rotateX(-90deg) rotateY(0deg)",
+        1: "rotateX(-8deg) rotateY(0deg)",
+        2: "rotateX(-8deg) rotateY(-90deg)",
+        3: "rotateX(-8deg) rotateY(180deg)",
+        4: "rotateX(-8deg) rotateY(90deg)",
+        5: "rotateX(-98deg) rotateY(0deg)",
       };
 
       function reiniciar() {
@@ -528,11 +440,9 @@
         }
 
         actualizarRestantes();
-
         desarmar();
 
         fraseAudioEl.textContent = "";
-
         fraseAudioEl.classList.remove("show");
 
         dice.classList.remove("rolling");
@@ -562,11 +472,48 @@
         return lista[Math.floor(Math.random() * lista.length)];
       }
 
-      function mostrarFrase() {
+      function formatearListaMesas(lista) {
+        if (lista.length === 0) return "";
+        if (lista.length === 1) return lista[0].toString();
+        if (lista.length === 2) return lista[0] + " y " + lista[1];
+
+        return lista.slice(0, -1).join(", ") + " y " + lista[lista.length - 1];
+      }
+
+      function obtenerFraseDinamica(numeroMesaQueSale) {
+        const restantes = [...mesas].sort((a, b) => a - b);
+
+        let bloque = null;
+
+        if (restantes.length === 4) {
+          bloque = frasesPorEstado.quedan4;
+        } else if (restantes.length === 3) {
+          bloque = frasesPorEstado.quedan3;
+        } else if (restantes.length === 2) {
+          bloque = frasesPorEstado.quedan2;
+        } else if (restantes.length === 1) {
+          bloque = frasesPorEstado.queda1;
+        } else {
+          bloque = frasesPorEstado.final;
+        }
+
+        let frase = elegirAleatorio(bloque);
+
+        frase = frase
+          .replaceAll("{salida}", numeroMesaQueSale)
+          .replaceAll("{quedan}", formatearListaMesas(restantes))
+          .replaceAll("{queda}", restantes[0] ?? "")
+          .replaceAll("{primeraRestante}", restantes[0] ?? "")
+          .replaceAll("{segundaRestante}", restantes[1] ?? "");
+
+        return frase;
+      }
+
+      function mostrarFrase(numeroMesaQueSale) {
         fraseAudioEl.classList.remove("show");
 
         setTimeout(() => {
-          fraseAudioEl.textContent = elegirAleatorio(frases);
+          fraseAudioEl.textContent = obtenerFraseDinamica(numeroMesaQueSale);
 
           fraseAudioEl.classList.add("show");
         }, 80);
@@ -583,7 +530,6 @@
           const y = window.innerHeight / 2 + (Math.random() * 80 - 40);
 
           s.style.left = x + "px";
-
           s.style.top = y + "px";
 
           document.body.appendChild(s);
@@ -610,7 +556,6 @@
         msgEl.textContent = "Pulsa otra vez para confirmar la mesa.";
 
         fraseAudioEl.textContent = "";
-
         fraseAudioEl.classList.remove("show");
 
         dice.classList.add("rolling");
@@ -637,7 +582,6 @@
       function sacarMesaConfirmada() {
         if (mesas.length === 0) {
           overlay.classList.add("show");
-
           return;
         }
 
@@ -652,33 +596,33 @@
         setTimeout(() => {
           dice.style.transform =
             posicionesDado[numero] +
-            " rotateX(-18deg) rotateY(-18deg) rotateZ(" +
+            " rotateZ(" +
             Math.floor(Math.random() * 4) * 360 +
             "deg)";
         }, 40);
 
-        mesaEl.textContent = "MESA NÚMERO " + numero;
+        setTimeout(() => {
+          mesaEl.textContent = "MESA NÚMERO " + numero;
 
-        msgEl.textContent =
-          "Gracias por tu paciencia. Entre todos hacemos un espacio mejor.";
+          msgEl.textContent =
+            "Gracias por tu paciencia. Entre todos hacemos un espacio mejor.";
 
-        mostrarFrase();
+          mostrarFrase(numero);
 
-        actualizarRestantes();
+          actualizarRestantes();
 
-        animarTexto();
+          animarTexto();
+        }, 1250);
       }
 
       function tap() {
         if (mesas.length === 0) {
           overlay.classList.add("show");
-
           return;
         }
 
         if (!armado) {
           armar();
-
           return;
         }
 
