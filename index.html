@@ -369,6 +369,7 @@
       let mesaSonando = null;
       let ultimaCancion = "";
       let sesionAudio = 0;
+      let audioDesbloqueado = false;
 
       const dice = document.getElementById("dice");
       const mesaEl = document.getElementById("mesa");
@@ -581,6 +582,29 @@
         audioSorteo.currentTime = 0;
       }
 
+      function desbloquearAudio() {
+        if (audioDesbloqueado) return;
+
+        audioDesbloqueado = true;
+        audioSorteo.volume = 0.08;
+
+        const intento = audioSorteo.play();
+
+        if (intento?.then) {
+          intento
+            .then(() => {
+              setTimeout(() => {
+                audioSorteo.pause();
+                audioSorteo.currentTime = 0;
+                audioSorteo.volume = 0.45;
+              }, 120);
+            })
+            .catch(() => {
+              audioDesbloqueado = false;
+            });
+        }
+      }
+
       function prepararMusicaMesa(numeroMesa) {
         const estilo = estilosPorMesa[numeroMesa];
 
@@ -614,8 +638,9 @@
         audioMesa.volume = 0.72;
         audioMesa.play().catch(() => {
           fraseAudioEl.textContent =
-            "Pulsa de nuevo si el navegador necesita activar el sonido.";
+            "La tele ha bloqueado el sonido. Pulsa ASIGNAR MESA otra vez para activarlo.";
           fraseAudioEl.classList.add("show");
+          audioDesbloqueado = false;
         });
       }
 
@@ -646,6 +671,14 @@
         window.speechSynthesis.cancel();
 
         const voz = new SpeechSynthesisUtterance(texto);
+        let musicaLanzada = false;
+
+        const lanzarMusica = () => {
+          if (musicaLanzada) return;
+
+          musicaLanzada = true;
+          reproducirCancion(cancion, sesion);
+        };
 
         voz.lang = "es-ES";
         voz.rate = 0.96;
@@ -658,10 +691,12 @@
           voz.voice = vozEspanol;
         }
 
-        voz.onend = () => reproducirCancion(cancion, sesion);
-        voz.onerror = () => reproducirCancion(cancion, sesion);
+        voz.onend = lanzarMusica;
+        voz.onerror = lanzarMusica;
 
         window.speechSynthesis.speak(voz);
+
+        setTimeout(lanzarMusica, Math.min(6500, 1800 + texto.length * 55));
       }
 
       function formatearListaMesas(lista) {
@@ -831,6 +866,8 @@
       }
 
       function tap() {
+        desbloquearAudio();
+
         if (mesas.length === 0) {
           overlay.classList.add("show");
           return;
