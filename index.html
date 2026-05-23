@@ -370,6 +370,7 @@
       let ultimaCancion = "";
       let sesionAudio = 0;
       let audioDesbloqueado = false;
+      let fraseMesaActual = "";
 
       const dice = document.getElementById("dice");
       const mesaEl = document.getElementById("mesa");
@@ -572,6 +573,7 @@
         window.speechSynthesis?.cancel();
         mesaSonando = null;
         ultimaCancion = "";
+        fraseMesaActual = "";
         audioMesa.pause();
         audioMesa.removeAttribute("src");
         audioMesa.load();
@@ -636,12 +638,17 @@
         audioMesa.src = encodeURI(cancion.ruta);
         audioMesa.currentTime = 0;
         audioMesa.volume = 0.72;
-        audioMesa.play().catch(() => {
-          fraseAudioEl.textContent =
-            "La tele ha bloqueado el sonido. Pulsa ASIGNAR MESA otra vez para activarlo.";
-          fraseAudioEl.classList.add("show");
-          audioDesbloqueado = false;
-        });
+        audioMesa
+          .play()
+          .then(() => {
+            mostrarCancionActual(cancion);
+          })
+          .catch(() => {
+            fraseAudioEl.textContent =
+              "La tele ha bloqueado el sonido. Pulsa ASIGNAR MESA otra vez para activarlo.";
+            fraseAudioEl.classList.add("show");
+            audioDesbloqueado = false;
+          });
       }
 
       function reproducirSiguienteCancionMesa() {
@@ -736,14 +743,22 @@
         return frase;
       }
 
-      function mostrarFrase(fraseCompleta) {
+      function mostrarTexto(texto) {
         fraseAudioEl.classList.remove("show");
 
         setTimeout(() => {
-          fraseAudioEl.textContent = fraseCompleta;
+          fraseAudioEl.textContent = texto;
 
           fraseAudioEl.classList.add("show");
         }, 80);
+      }
+
+      function mostrarCancionActual(cancion) {
+        const texto = cancion
+          ? `${fraseMesaActual} Ahora suena: ${cancion.titulo}.`
+          : fraseMesaActual;
+
+        mostrarTexto(texto);
       }
 
       function confetiSuave() {
@@ -845,9 +860,10 @@
           const sesionMesa = sesionAudio;
           const cancion = prepararMusicaMesa(numero);
           const frase = obtenerFraseDinamica(numero);
+          fraseMesaActual = frase;
           const fraseCompleta = cancion
-            ? `${frase} Ahora suena: ${cancion.titulo}.`
-            : frase;
+            ? `${fraseMesaActual} Ahora suena: ${cancion.titulo}.`
+            : fraseMesaActual;
 
           mesaEl.textContent = "MESA " + numero;
 
@@ -856,7 +872,7 @@
             : "MESA ASIGNADA";
           msgEl.style.background = estilo?.color || "";
 
-          mostrarFrase(fraseCompleta);
+          mostrarTexto(fraseCompleta);
           narrarAntesDeMusica(fraseCompleta, cancion, sesionMesa);
 
           actualizarRestantes();
