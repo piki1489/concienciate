@@ -366,6 +366,9 @@
       let mesas = [];
       let armado = false;
       let timerArmado = null;
+      let mesaSonando = null;
+      let ultimaCancion = "";
+      let sesionAudio = 0;
 
       const dice = document.getElementById("dice");
       const mesaEl = document.getElementById("mesa");
@@ -416,7 +419,7 @@
           etiqueta: "Mesa de la rumba",
           color: "linear-gradient(135deg, #1f8a70, #f1b84b)",
           canciones: [
-            "rumba/Manolo Garcia - A San Fernando un Ratito a Pie y Otro Caminando (Remasterizado) [_pvwdyrYUWs].mp3",
+            "rumba/El barrio - Somos los barrieros [xz-ufjce1ow].mp3",
             "rumba/Los Delinqüentes - La primavera trompetera (Videoclip Oficial) [MfILTRB6h4I].mp3",
             "rumba/Gipsy Kings - Volare (Nel Blu di Pinto di Blu) (Official HD Video) [X8TOhb_4jU0].mp3",
             "rumba/Estopa - Como Camaron (Videoclip) [JmP89cIGJZM].mp3",
@@ -446,44 +449,44 @@
 
       const frasesPorEstado = {
         quedan4: [
-          "Sale la mesa {salida}. El dado empieza fuerte.",
+          "La elegida es la mesa {salida}. El dado empieza fuerte.",
           "Mesa {salida}. Primera ronda con estilo.",
           "La mesa {salida} se adelanta. Las demás calientan.",
           "Mesa {salida}. El dado ya se ha venido arriba.",
-          "Sale la mesa {salida}. Quedan {quedan} en la pista.",
+          "Turno para la mesa {salida}. Quedan {quedan} en la pista.",
           "Mesa {salida}. Entrada triunfal y sin despeinarse.",
           "La mesa {salida} abre la noche. Bien jugado.",
           "Mesa {salida}. El dado ha hablado claro.",
         ],
 
         quedan3: [
-          "Sale la mesa {salida}. Quedan {quedan}, ojo.",
+          "Le toca a la mesa {salida}. Quedan {quedan}, ojo.",
           "Mesa {salida}. El dado tiene sus favoritos.",
           "La mesa {salida} avanza. Quedan {quedan}.",
           "Mesa {salida}. Suspense justo, hambre real.",
-          "Sale la mesa {salida}. Quedan {quedan} resistiendo.",
+          "Turno para la mesa {salida}. Quedan {quedan} resistiendo.",
           "Mesa {salida}. El dado sigue mandando.",
           "La mesa {salida} pasa delante. Sin pedir permiso.",
           "Mesa {salida}. Esto se pone interesante.",
         ],
 
         quedan2: [
-          "Sale la mesa {salida}. Quedan {primeraRestante} y {segundaRestante}.",
+          "Le toca a la mesa {salida}. Quedan {primeraRestante} y {segundaRestante}.",
           "Mesa {salida}. Final apretado entre {primeraRestante} y {segundaRestante}.",
           "La mesa {salida} se adelanta. Quedan dos finalistas.",
           "Mesa {salida}. Ahora viene el cara o cruz.",
-          "Sale la mesa {salida}. {primeraRestante} y {segundaRestante} siguen vivas.",
+          "Turno para la mesa {salida}. {primeraRestante} y {segundaRestante} siguen vivas.",
           "Mesa {salida}. El final ya huele a cena.",
           "La mesa {salida} pasa. Quedan {primeraRestante} y {segundaRestante}.",
           "Mesa {salida}. Esto ya es final de torneo.",
         ],
 
         queda1: [
-          "Sale la mesa {salida}. Solo queda la {queda}.",
+          "La elegida es la mesa {salida}. Solo queda la {queda}.",
           "Mesa {salida}. La {queda} cierra la fiesta.",
           "La mesa {salida} entra. La {queda} guarda el final.",
           "Mesa {salida}. Queda la {queda}, con suspense.",
-          "Sale la mesa {salida}. La {queda} va de estrella final.",
+          "Turno para la mesa {salida}. La {queda} va de estrella final.",
           "Mesa {salida}. Última pendiente: la {queda}.",
           "La mesa {salida} pasa. La {queda} respira hondo.",
           "Mesa {salida}. La {queda} se queda para el cierre.",
@@ -564,10 +567,18 @@
       }
 
       function detenerMusicaMesa() {
+        sesionAudio++;
         window.speechSynthesis?.cancel();
+        mesaSonando = null;
+        ultimaCancion = "";
         audioMesa.pause();
         audioMesa.removeAttribute("src");
         audioMesa.load();
+      }
+
+      function detenerSorteo() {
+        audioSorteo.pause();
+        audioSorteo.currentTime = 0;
       }
 
       function prepararMusicaMesa(numeroMesa) {
@@ -575,7 +586,16 @@
 
         if (!estilo) return null;
 
-        const cancion = elegirAleatorio(estilo.canciones);
+        let cancionesDisponibles = estilo.canciones;
+
+        if (estilo.canciones.length > 1) {
+          cancionesDisponibles = estilo.canciones.filter(
+            (cancion) => cancion !== ultimaCancion,
+          );
+        }
+
+        const cancion = elegirAleatorio(cancionesDisponibles);
+        ultimaCancion = cancion;
 
         return {
           ruta: cancion,
@@ -583,11 +603,11 @@
         };
       }
 
-      function reproducirCancion(cancion) {
+      function reproducirCancion(cancion, sesion) {
         if (!cancion) return;
+        if (sesion && sesion !== sesionAudio) return;
 
-        audioSorteo.pause();
-        audioSorteo.currentTime = 0;
+        detenerSorteo();
         audioMesa.pause();
         audioMesa.src = encodeURI(cancion.ruta);
         audioMesa.currentTime = 0;
@@ -597,6 +617,14 @@
             "Pulsa de nuevo si el navegador necesita activar el sonido.";
           fraseAudioEl.classList.add("show");
         });
+      }
+
+      function reproducirSiguienteCancionMesa() {
+        if (!mesaSonando) return;
+
+        const cancion = prepararMusicaMesa(mesaSonando);
+
+        reproducirCancion(cancion, sesionAudio);
       }
 
       function obtenerVozEspanol() {
@@ -609,9 +637,9 @@
         );
       }
 
-      function narrarAntesDeMusica(texto, cancion) {
+      function narrarAntesDeMusica(texto, cancion, sesion) {
         if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
-          reproducirCancion(cancion);
+          reproducirCancion(cancion, sesion);
           return;
         }
 
@@ -630,8 +658,8 @@
           voz.voice = vozEspanol;
         }
 
-        voz.onend = () => reproducirCancion(cancion);
-        voz.onerror = () => reproducirCancion(cancion);
+        voz.onend = () => reproducirCancion(cancion, sesion);
+        voz.onerror = () => reproducirCancion(cancion, sesion);
 
         window.speechSynthesis.speak(voz);
       }
@@ -754,6 +782,11 @@
           return;
         }
 
+        sesionAudio++;
+        detenerSorteo();
+        audioMesa.pause();
+        window.speechSynthesis?.cancel();
+
         const index = Math.floor(Math.random() * mesas.length);
 
         const numero = mesas[index];
@@ -772,6 +805,9 @@
 
         setTimeout(() => {
           const estilo = estilosPorMesa[numero];
+          mesaSonando = numero;
+          ultimaCancion = "";
+          const sesionMesa = sesionAudio;
           const cancion = prepararMusicaMesa(numero);
           const frase = obtenerFraseDinamica(numero);
           const fraseCompleta = cancion
@@ -786,7 +822,7 @@
           msgEl.style.background = estilo?.color || "";
 
           mostrarFrase(fraseCompleta);
-          narrarAntesDeMusica(fraseCompleta, cancion);
+          narrarAntesDeMusica(fraseCompleta, cancion, sesionMesa);
 
           actualizarRestantes();
 
@@ -815,6 +851,8 @@
           e.preventDefault();
         }
       });
+
+      audioMesa.addEventListener("ended", reproducirSiguienteCancionMesa);
 
       reiniciar();
     </script>
