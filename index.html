@@ -7,9 +7,13 @@
 
     <style>
       :root {
-        --azul: #1e3c72;
-        --azul2: #2a5298;
-        --gris: #444;
+        --azul: #12335f;
+        --azul2: #2467a6;
+        --coral: #e85d4f;
+        --verde: #1f8a70;
+        --oro: #f1b84b;
+        --gris: #27313c;
+        --blanco: rgba(255, 255, 255, 0.96);
       }
 
       * {
@@ -19,7 +23,10 @@
       body {
         margin: 0;
         height: 100vh;
-        background: linear-gradient(135deg, #f8fbff, #eef4ff);
+        background:
+          radial-gradient(circle at 12% 18%, rgba(241, 184, 75, 0.26), transparent 28%),
+          radial-gradient(circle at 86% 22%, rgba(232, 93, 79, 0.18), transparent 30%),
+          linear-gradient(135deg, #f7fbff 0%, #eef6f2 48%, #fff5ed 100%);
 
         display: flex;
         justify-content: center;
@@ -40,15 +47,15 @@
         height: 100vh;
         object-fit: contain;
         object-position: center;
-        opacity: 0.26;
-        filter: grayscale(1) contrast(1.15);
+        opacity: 0.18;
+        filter: grayscale(1) contrast(1.18);
         z-index: -3;
         pointer-events: none;
         transform: scale(1.08) rotate(-6deg);
       }
 
       .wrap {
-        width: min(1100px, 92vw);
+        width: min(1180px, 94vw);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -56,35 +63,35 @@
 
       .card {
         width: 100%;
-        padding: 24px 28px 30px;
-        border-radius: 36px;
+        padding: clamp(22px, 3vw, 38px);
+        border-radius: 8px;
 
         background: linear-gradient(
           180deg,
-          rgba(255, 255, 255, 0.14),
-          rgba(255, 255, 255, 0.06)
+          rgba(255, 255, 255, 0.9),
+          rgba(255, 255, 255, 0.72)
         );
 
-        border: 1px solid rgba(255, 255, 255, 0.22);
+        border: 1px solid rgba(18, 51, 95, 0.12);
 
         box-shadow:
-          0 18px 55px rgba(0, 0, 0, 1),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+          0 22px 65px rgba(18, 51, 95, 0.18),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.76);
 
-        backdrop-filter: blur(3px);
-        -webkit-backdrop-filter: blur(3px);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
       }
 
       .scene {
-        width: 250px;
-        height: 250px;
-        margin: 0 auto 26px;
+        width: clamp(190px, 22vw, 270px);
+        height: clamp(190px, 22vw, 270px);
+        margin: 0 auto clamp(16px, 2vw, 24px);
         perspective: 1200px;
       }
 
       .dice {
-        width: 200px;
-        height: 200px;
+        width: clamp(160px, 18vw, 220px);
+        height: clamp(160px, 18vw, 220px);
         position: relative;
         margin: 20px auto;
         transform-style: preserve-3d;
@@ -108,9 +115,9 @@
 
       .face {
         position: absolute;
-        width: 200px;
-        height: 200px;
-        border-radius: 30px;
+        width: clamp(160px, 18vw, 220px);
+        height: clamp(160px, 18vw, 220px);
+        border-radius: 8px;
 
         background: linear-gradient(
           145deg,
@@ -128,35 +135,35 @@
         justify-content: center;
         align-items: center;
 
-        font-size: 82px;
+        font-size: clamp(72px, 8vw, 104px);
         font-weight: 900;
         color: var(--azul);
       }
 
       .front {
-        transform: rotateY(0deg) translateZ(100px);
+        transform: rotateY(0deg) translateZ(clamp(80px, 9vw, 110px));
       }
       .back {
-        transform: rotateY(180deg) translateZ(100px);
+        transform: rotateY(180deg) translateZ(clamp(80px, 9vw, 110px));
       }
       .right {
-        transform: rotateY(90deg) translateZ(100px);
+        transform: rotateY(90deg) translateZ(clamp(80px, 9vw, 110px));
       }
       .left {
-        transform: rotateY(-90deg) translateZ(100px);
+        transform: rotateY(-90deg) translateZ(clamp(80px, 9vw, 110px));
       }
       .top {
-        transform: rotateX(90deg) translateZ(100px);
+        transform: rotateX(90deg) translateZ(clamp(80px, 9vw, 110px));
       }
       .bottom {
-        transform: rotateX(-90deg) translateZ(100px);
+        transform: rotateX(-90deg) translateZ(clamp(80px, 9vw, 110px));
       }
 
       #mesa {
-        font-size: clamp(44px, 6vw, 92px);
+        font-size: clamp(46px, 7vw, 104px);
         font-weight: 900;
         letter-spacing: 1px;
-        margin: 6px 0 8px;
+        margin: 4px 0 8px;
         transition: transform 0.2s ease;
 
         text-shadow:
@@ -169,21 +176,30 @@
       }
 
       #mensaje {
-        font-size: clamp(18px, 2.2vw, 34px);
-        color: var(--gris);
-        margin: 0 0 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: min(560px, 92vw);
+        min-height: 1.8em;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: clamp(22px, 2.6vw, 38px);
+        color: white;
+        background: linear-gradient(135deg, var(--coral), var(--azul2));
+        margin: 0 0 12px;
+        font-weight: 900;
         min-height: 1.4em;
 
-        text-shadow: 0 8px 24px rgba(255, 255, 255, 0.95);
+        text-shadow: 0 3px 12px rgba(0, 0, 0, 0.24);
       }
 
       #fraseAudio {
         margin: 14px auto 16px;
         max-width: 900px;
         min-height: 2em;
-        font-size: clamp(18px, 2vw, 28px);
-        color: var(--azul);
-        font-weight: 800;
+        font-size: clamp(18px, 2vw, 30px);
+        color: var(--gris);
+        font-weight: 700;
         opacity: 0;
         transform: translateY(8px);
         transition: all 0.35s ease;
@@ -197,26 +213,26 @@
       }
 
       .meta {
-        font-size: clamp(14px, 1.6vw, 20px);
-        color: rgba(30, 60, 114, 0.78);
-        margin-top: 10px;
+        font-size: clamp(16px, 1.7vw, 22px);
+        color: rgba(18, 51, 95, 0.82);
+        margin-top: 14px;
 
         text-shadow: 0 8px 24px rgba(255, 255, 255, 0.95);
       }
 
       .btn {
         font-size: clamp(22px, 3vw, 42px);
-        padding: 18px 54px;
+        padding: 18px clamp(42px, 7vw, 76px);
         border: none;
-        border-radius: 20px;
+        border-radius: 8px;
 
-        background: linear-gradient(135deg, var(--azul), var(--azul2));
+        background: linear-gradient(135deg, var(--azul), var(--verde));
 
         color: white;
         cursor: pointer;
         font-weight: 800;
 
-        box-shadow: 0 16px 32px rgba(30, 60, 114, 0.24);
+        box-shadow: 0 16px 32px rgba(18, 51, 95, 0.24);
 
         transition: all 0.2s ease;
       }
@@ -249,7 +265,7 @@
       .modal {
         width: min(760px, 92vw);
         background: white;
-        border-radius: 24px;
+        border-radius: 8px;
         padding: 26px;
         box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
         text-align: center;
@@ -327,7 +343,8 @@
       </div>
     </div>
 
-    <audio id="audioSorteo" preload="auto"></audio>
+    <audio id="audioSorteo" src="sorteo.mp3" preload="auto"></audio>
+    <audio id="audioMesa" preload="auto"></audio>
 
     <div class="overlay" id="overlay">
       <div class="modal">
@@ -357,9 +374,69 @@
       const restEl = document.getElementById("restantes");
       const btn = document.getElementById("btn");
       const overlay = document.getElementById("overlay");
+      const audioSorteo = document.getElementById("audioSorteo");
+      const audioMesa = document.getElementById("audioMesa");
+
+      const estilosPorMesa = {
+        1: {
+          nombre: "rock",
+          etiqueta: "Mesa del rock",
+          color: "linear-gradient(135deg, #1f2937, #e85d4f)",
+          canciones: [
+            "rock/Bon Jovi - Livin' On A Prayer [lDK9QqIzhwk].mp3",
+            "rock/AC_DC - Hells Bells (Official 4K Video) [etAIpkdhU9Q].mp3",
+            "rock/Guns N' Roses - Sweet Child O' Mine (Official Music Video) [1w7OgIMMRc4].mp3",
+            "rock/Metallica_ Nothing Else Matters (Official Music Video) [tAGnKpE4NCI].mp3",
+          ],
+        },
+        2: {
+          nombre: "indie",
+          etiqueta: "Mesa del indie",
+          color: "linear-gradient(135deg, #2467a6, #7c5cff)",
+          canciones: [
+            "indie/Leiva - Como Si Fueras a Morir Mañana [DMSTr9JOhBE].mp3",
+            "indie/IZAL - Copacabana (Video Oficial) [Btvxvr64Nkg].mp3",
+            "indie/Dani Fernández - Me has invitado a bailar (Videoclip Oficial) [ZjMGn4Kc7w0].mp3",
+            "indie/Arde Bogotá - Exoplaneta (Audio) [HZgDUvxHvcw].mp3",
+          ],
+        },
+        3: {
+          nombre: "pop",
+          etiqueta: "Mesa del pop",
+          color: "linear-gradient(135deg, #e85d4f, #f1b84b)",
+          canciones: [
+            "pop/Robbie Williams - Angels [luwAMFcc2f8].mp3",
+            "pop/Michael Jackson - Billie Jean (Official Video) [Zi_XLOBDo_Y].mp3",
+            "pop/Coldplay - Fix You (Official Video) [k4V3Mo61fJM].mp3",
+            "pop/The Weeknd - Blinding Lights (Official Video) [4NRXx6U8ABQ].mp3",
+          ],
+        },
+        4: {
+          nombre: "rumba",
+          etiqueta: "Mesa de la rumba",
+          color: "linear-gradient(135deg, #1f8a70, #f1b84b)",
+          canciones: [
+            "rumba/Manolo Garcia - A San Fernando un Ratito a Pie y Otro Caminando (Remasterizado) [_pvwdyrYUWs].mp3",
+            "rumba/Los Delinqüentes - La primavera trompetera (Videoclip Oficial) [MfILTRB6h4I].mp3",
+            "rumba/Gipsy Kings - Volare (Nel Blu di Pinto di Blu) (Official HD Video) [X8TOhb_4jU0].mp3",
+            "rumba/Estopa - Como Camaron (Videoclip) [JmP89cIGJZM].mp3",
+          ],
+        },
+        5: {
+          nombre: "pop rock de los 80",
+          etiqueta: "Mesa del pop rock de los 80",
+          color: "linear-gradient(135deg, #12335f, #f1b84b)",
+          canciones: [
+            "Pop rock de los 80/Los Rodriguez - Sin Documentos (Videoclip oficial) [BUKHMGiW_rY].mp3",
+            "Pop rock de los 80/Loquillo Y Los Trogloditas - Cadillac Solitario [vvitGvSA1EI].mp3",
+            "Pop rock de los 80/El Sitio De Mi Recreo [ECVg698j3UI].mp3",
+            "Pop rock de los 80/Antonio Flores - No Dudaria (Video TVE) [F_xbfIgWMHU].mp3",
+          ],
+        },
+      };
 
       /*
-        Preparado para audio futuro:
+        Frases dinámicas para acompañar cada asignación:
         Cada frase usa datos reales:
         {salida} = mesa que acaba de salir
         {quedan} = mesas que quedan
@@ -369,58 +446,58 @@
 
       const frasesPorEstado = {
         quedan4: [
-          "Sale la mesa {salida}. Primera en salir, primera en cenar. El dado ya ha marcado territorio.",
-          "Mesa {salida} asignada. Empieza fuerte la noche y quedan las mesas {quedan} esperando turno.",
-          "La mesa {salida} ya puede respirar tranquila. Las mesas {quedan} siguen mirando al dado con respeto.",
-          "Primera elegida: mesa {salida}. Esto acaba de empezar y el dado ya se cree presentador de televisión.",
-          "Mesa {salida} fuera. Quedan {quedan}. Todavía hay margen para hacerse el interesante.",
-          "Arranca la mesa {salida}. Las demás, {quedan}, siguen en modo paciencia profesional.",
-          "La mesa {salida} se adelanta. Las mesas {quedan} acaban de descubrir que esto iba en serio.",
-          "Mesa {salida} asignada. El dado ha hablado poco, pero ha hablado claro.",
+          "Sale la mesa {salida}. El dado empieza fuerte.",
+          "Mesa {salida}. Primera ronda con estilo.",
+          "La mesa {salida} se adelanta. Las demás calientan.",
+          "Mesa {salida}. El dado ya se ha venido arriba.",
+          "Sale la mesa {salida}. Quedan {quedan} en la pista.",
+          "Mesa {salida}. Entrada triunfal y sin despeinarse.",
+          "La mesa {salida} abre la noche. Bien jugado.",
+          "Mesa {salida}. El dado ha hablado claro.",
         ],
 
         quedan3: [
-          "Sale la mesa {salida}. Quedan las mesas {quedan}, y aquí ya empiezan los cálculos de ingeniería.",
-          "Mesa {salida} servida por el destino. Las mesas {quedan} siguen en la sala de espera del dado.",
-          "La mesa {salida} avanza. Quedan {quedan}, y el suspense está siendo totalmente innecesario.",
-          "Mesa {salida} asignada. Las mesas {quedan} empiezan a pensar que el dado tiene favoritos.",
-          "Sale la mesa {salida}. Quedan {quedan}. Esto ya parece una eliminatoria absurda pero emocionante.",
-          "La mesa {salida} ya tiene vía libre. Las mesas {quedan} siguen aguantando el tipo.",
-          "Mesa {salida} fuera. Quedan {quedan}. El dado está disfrutando demasiado de este momento.",
-          "Sale la mesa {salida}. Las mesas {quedan} siguen vivas en esta competición gastronómica.",
+          "Sale la mesa {salida}. Quedan {quedan}, ojo.",
+          "Mesa {salida}. El dado tiene sus favoritos.",
+          "La mesa {salida} avanza. Quedan {quedan}.",
+          "Mesa {salida}. Suspense justo, hambre real.",
+          "Sale la mesa {salida}. Quedan {quedan} resistiendo.",
+          "Mesa {salida}. El dado sigue mandando.",
+          "La mesa {salida} pasa delante. Sin pedir permiso.",
+          "Mesa {salida}. Esto se pone interesante.",
         ],
 
         quedan2: [
-          "Sale la mesa {salida}. Quedan la mesa {primeraRestante} y la mesa {segundaRestante}. Una cenará antes, la otra con más suspense.",
-          "Mesa {salida} asignada. Ahora quedan {primeraRestante} y {segundaRestante}. Aquí se come seguro, pero alguien va a practicar paciencia.",
-          "Sale la mesa {salida}. Solo quedan dos: {primeraRestante} y {segundaRestante}. El dado ya está haciendo teatro.",
-          "Mesa {salida} fuera. Quedan {primeraRestante} y {segundaRestante}. Esto ya es cara o cruz con mantel.",
-          "La mesa {salida} se adelanta. Las mesas {primeraRestante} y {segundaRestante} siguen mirándose como finalistas.",
-          "Mesa {salida} asignada. Quedan {primeraRestante} y {segundaRestante}. Una sale ahora y la otra se come el final dramático.",
-          "Sale la mesa {salida}. Quedan {primeraRestante} y {segundaRestante}. El dado está alargando esto por puro espectáculo.",
-          "Mesa {salida} lista. Las mesas {primeraRestante} y {segundaRestante} acaban de entrar en modo final de torneo.",
+          "Sale la mesa {salida}. Quedan {primeraRestante} y {segundaRestante}.",
+          "Mesa {salida}. Final apretado entre {primeraRestante} y {segundaRestante}.",
+          "La mesa {salida} se adelanta. Quedan dos finalistas.",
+          "Mesa {salida}. Ahora viene el cara o cruz.",
+          "Sale la mesa {salida}. {primeraRestante} y {segundaRestante} siguen vivas.",
+          "Mesa {salida}. El final ya huele a cena.",
+          "La mesa {salida} pasa. Quedan {primeraRestante} y {segundaRestante}.",
+          "Mesa {salida}. Esto ya es final de torneo.",
         ],
 
         queda1: [
-          "Sale la mesa {salida}. Solo queda la mesa {queda}. La última cena, pero con entrada triunfal.",
-          "Mesa {salida} asignada. Queda la mesa {queda}. Se ha guardado el protagonismo para el final.",
-          "Sale la mesa {salida}. La mesa {queda} queda para el cierre. Alguien tenía que poner el drama.",
-          "Mesa {salida} fuera. Solo queda la mesa {queda}. Va a cenar la última, pero con categoría.",
-          "La mesa {salida} ya está dentro. La mesa {queda} se queda como final de temporada.",
-          "Sale la mesa {salida}. Queda la mesa {queda}. Ya no es espera, es escena final.",
-          "Mesa {salida} asignada. La mesa {queda} se queda sola ante el dado, como en una película.",
-          "Sale la mesa {salida}. Última pendiente: mesa {queda}. Está tardando, pero está quedando elegante.",
+          "Sale la mesa {salida}. Solo queda la {queda}.",
+          "Mesa {salida}. La {queda} cierra la fiesta.",
+          "La mesa {salida} entra. La {queda} guarda el final.",
+          "Mesa {salida}. Queda la {queda}, con suspense.",
+          "Sale la mesa {salida}. La {queda} va de estrella final.",
+          "Mesa {salida}. Última pendiente: la {queda}.",
+          "La mesa {salida} pasa. La {queda} respira hondo.",
+          "Mesa {salida}. La {queda} se queda para el cierre.",
         ],
 
         final: [
-          "Última mesa: la {salida}. Cierra el sorteo tarde, pero con aplausos imaginarios.",
-          "Y termina la mesa {salida}. Ha sido la última, sí, pero también la más cinematográfica.",
-          "Mesa {salida} para cerrar. El dado se despide como si hubiera hecho una obra maestra.",
-          "Última asignada: mesa {salida}. Se acabó el suspense y empieza lo importante.",
-          "Cierra la mesa {salida}. El dado ha trabajado duro y ahora exige reconocimiento.",
-          "Mesa {salida}, final del recorrido. Llegó tarde, pero llegó con estilo.",
-          "Y la última es la mesa {salida}. Final elegante para un sorteo absurdamente emocionante.",
-          "Mesa {salida} cerrando el evento. El algoritmo cocinó el drama hasta el último segundo.",
+          "Última mesa: la {salida}. Cierre con estilo.",
+          "Mesa {salida}. Se acabó el suspense.",
+          "Cierra la mesa {salida}. El dado descansa.",
+          "Mesa {salida}. Llegó tarde, llegó elegante.",
+          "Última asignada: mesa {salida}. Ahora sí.",
+          "Mesa {salida}. Final digno de aplauso.",
+          "Y la última es la {salida}. Buen cierre.",
+          "Mesa {salida}. Se acabó el show.",
         ],
       };
 
@@ -444,6 +521,8 @@
 
         fraseAudioEl.textContent = "";
         fraseAudioEl.classList.remove("show");
+        msgEl.removeAttribute("style");
+        detenerMusicaMesa();
 
         dice.classList.remove("rolling");
 
@@ -470,6 +549,91 @@
 
       function elegirAleatorio(lista) {
         return lista[Math.floor(Math.random() * lista.length)];
+      }
+
+      function limpiarNombreCancion(ruta) {
+        const archivo = decodeURIComponent(ruta.split("/").pop() || ruta);
+
+        return archivo
+          .replace(/\.mp3$/i, "")
+          .replace(/\s*\[[^\]]+\]\s*$/g, "")
+          .replace(/\s*\([^)]*(Official|Video|Videoclip|Audio|Remasterizado|HD|4K)[^)]*\)\s*/gi, " ")
+          .replace(/_/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function detenerMusicaMesa() {
+        window.speechSynthesis?.cancel();
+        audioMesa.pause();
+        audioMesa.removeAttribute("src");
+        audioMesa.load();
+      }
+
+      function prepararMusicaMesa(numeroMesa) {
+        const estilo = estilosPorMesa[numeroMesa];
+
+        if (!estilo) return null;
+
+        const cancion = elegirAleatorio(estilo.canciones);
+
+        return {
+          ruta: cancion,
+          titulo: limpiarNombreCancion(cancion),
+        };
+      }
+
+      function reproducirCancion(cancion) {
+        if (!cancion) return;
+
+        audioSorteo.pause();
+        audioSorteo.currentTime = 0;
+        audioMesa.pause();
+        audioMesa.src = encodeURI(cancion.ruta);
+        audioMesa.currentTime = 0;
+        audioMesa.volume = 0.72;
+        audioMesa.play().catch(() => {
+          fraseAudioEl.textContent =
+            "Pulsa de nuevo si el navegador necesita activar el sonido.";
+          fraseAudioEl.classList.add("show");
+        });
+      }
+
+      function obtenerVozEspanol() {
+        const voces = window.speechSynthesis?.getVoices?.() || [];
+
+        return (
+          voces.find((voz) => voz.lang?.toLowerCase().startsWith("es-es")) ||
+          voces.find((voz) => voz.lang?.toLowerCase().startsWith("es")) ||
+          voces[0]
+        );
+      }
+
+      function narrarAntesDeMusica(texto, cancion) {
+        if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+          reproducirCancion(cancion);
+          return;
+        }
+
+        window.speechSynthesis.cancel();
+
+        const voz = new SpeechSynthesisUtterance(texto);
+
+        voz.lang = "es-ES";
+        voz.rate = 0.96;
+        voz.pitch = 1.02;
+        voz.volume = 1;
+
+        const vozEspanol = obtenerVozEspanol();
+
+        if (vozEspanol) {
+          voz.voice = vozEspanol;
+        }
+
+        voz.onend = () => reproducirCancion(cancion);
+        voz.onerror = () => reproducirCancion(cancion);
+
+        window.speechSynthesis.speak(voz);
       }
 
       function formatearListaMesas(lista) {
@@ -509,11 +673,11 @@
         return frase;
       }
 
-      function mostrarFrase(numeroMesaQueSale) {
+      function mostrarFrase(fraseCompleta) {
         fraseAudioEl.classList.remove("show");
 
         setTimeout(() => {
-          fraseAudioEl.textContent = obtenerFraseDinamica(numeroMesaQueSale);
+          fraseAudioEl.textContent = fraseCompleta;
 
           fraseAudioEl.classList.add("show");
         }, 80);
@@ -557,8 +721,13 @@
 
         fraseAudioEl.textContent = "";
         fraseAudioEl.classList.remove("show");
+        detenerMusicaMesa();
+        window.speechSynthesis?.cancel();
 
         dice.classList.add("rolling");
+        audioSorteo.currentTime = 0;
+        audioSorteo.volume = 0.45;
+        audioSorteo.play().catch(() => {});
 
         clearTimeout(timerArmado);
 
@@ -602,12 +771,22 @@
         }, 40);
 
         setTimeout(() => {
-          mesaEl.textContent = "MESA NÚMERO " + numero;
+          const estilo = estilosPorMesa[numero];
+          const cancion = prepararMusicaMesa(numero);
+          const frase = obtenerFraseDinamica(numero);
+          const fraseCompleta = cancion
+            ? `${frase} Ahora suena: ${cancion.titulo}.`
+            : frase;
 
-          msgEl.textContent =
-            "Gracias por tu paciencia. Entre todos hacemos un espacio mejor.";
+          mesaEl.textContent = "MESA " + numero;
 
-          mostrarFrase(numero);
+          msgEl.textContent = estilo
+            ? estilo.etiqueta.toUpperCase()
+            : "MESA ASIGNADA";
+          msgEl.style.background = estilo?.color || "";
+
+          mostrarFrase(fraseCompleta);
+          narrarAntesDeMusica(fraseCompleta, cancion);
 
           actualizarRestantes();
 
