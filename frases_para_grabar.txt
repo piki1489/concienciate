@@ -1,0 +1,63 @@
+Frases actuales para grabar
+===========================
+
+Variables:
+- {salida}: numero de la mesa que acaba de salir.
+- {quedan}: mesas que siguen pendientes, por ejemplo "2, 4 y 5".
+- {queda}: unica mesa pendiente cuando solo queda una.
+- {primeraRestante} y {segundaRestante}: las dos mesas pendientes cuando quedan dos.
+
+Cuando quedan 4 mesas
+---------------------
+La elegida es la mesa {salida}. El dado empieza fuerte.
+Mesa {salida}. Primera ronda con estilo.
+La mesa {salida} se adelanta. Las demas calientan.
+Mesa {salida}. El dado ya se ha venido arriba.
+Turno para la mesa {salida}. Quedan {quedan} en la pista.
+Mesa {salida}. Entrada triunfal y sin despeinarse.
+La mesa {salida} abre la noche. Bien jugado.
+Mesa {salida}. El dado ha hablado claro.
+
+Cuando quedan 3 mesas
+---------------------
+Le toca a la mesa {salida}. Quedan {quedan}, ojo.
+Mesa {salida}. El dado tiene sus favoritos.
+La mesa {salida} avanza. Quedan {quedan}.
+Mesa {salida}. Suspense justo, hambre real.
+Turno para la mesa {salida}. Quedan {quedan} resistiendo.
+Mesa {salida}. El dado sigue mandando.
+La mesa {salida} pasa delante. Sin pedir permiso.
+Mesa {salida}. Esto se pone interesante.
+
+Cuando quedan 2 mesas
+---------------------
+Le toca a la mesa {salida}. Quedan {primeraRestante} y {segundaRestante}.
+Mesa {salida}. Final apretado entre {primeraRestante} y {segundaRestante}.
+La mesa {salida} se adelanta. Quedan dos finalistas.
+Mesa {salida}. Ahora viene el cara o cruz.
+Turno para la mesa {salida}. {primeraRestante} y {segundaRestante} siguen vivas.
+Mesa {salida}. El final ya huele a cena.
+La mesa {salida} pasa. Quedan {primeraRestante} y {segundaRestante}.
+Mesa {salida}. Esto ya es final de torneo.
+
+Cuando queda 1 mesa
+-------------------
+La elegida es la mesa {salida}. Solo queda la {queda}.
+Mesa {salida}. La {queda} cierra la fiesta.
+La mesa {salida} entra. La {queda} guarda el final.
+Mesa {salida}. Queda la {queda}, con suspense.
+Turno para la mesa {salida}. La {queda} va de estrella final.
+Mesa {salida}. Ultima pendiente: la {queda}.
+La mesa {salida} pasa. La {queda} respira hondo.
+Mesa {salida}. La {queda} se queda para el cierre.
+
+Final
+-----
+Ultima mesa: la {salida}. Cierre con estilo.
+Mesa {salida}. Se acabo el suspense.
+Cierra la mesa {salida}. El dado descansa.
+Mesa {salida}. Llego tarde, llego elegante.
+Ultima asignada: mesa {salida}. Ahora si.
+Mesa {salida}. Final digno de aplauso.
+Y la ultima es la {salida}. Buen cierre.
+Mesa {salida}. Se acabo el show.

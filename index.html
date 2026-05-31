@@ -23,9 +23,18 @@
       body {
         margin: 0;
         height: 100vh;
+        padding: clamp(8px, 1.4vh, 16px) 0;
         background:
-          radial-gradient(circle at 12% 18%, rgba(241, 184, 75, 0.26), transparent 28%),
-          radial-gradient(circle at 86% 22%, rgba(232, 93, 79, 0.18), transparent 30%),
+          radial-gradient(
+            circle at 12% 18%,
+            rgba(241, 184, 75, 0.26),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 86% 22%,
+            rgba(232, 93, 79, 0.18),
+            transparent 30%
+          ),
           linear-gradient(135deg, #f7fbff 0%, #eef6f2 48%, #fff5ed 100%);
 
         display: flex;
@@ -56,6 +65,7 @@
 
       .wrap {
         width: min(1180px, 94vw);
+        max-height: calc(100vh - 16px);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -63,7 +73,8 @@
 
       .card {
         width: 100%;
-        padding: clamp(22px, 3vw, 38px);
+        max-height: calc(100vh - 16px);
+        padding: clamp(14px, 2.2vw, 30px);
         border-radius: 8px;
 
         background: linear-gradient(
@@ -83,15 +94,15 @@
       }
 
       .scene {
-        width: clamp(190px, 22vw, 270px);
-        height: clamp(190px, 22vw, 270px);
-        margin: 0 auto clamp(16px, 2vw, 24px);
+        width: clamp(150px, 18vh, 230px);
+        height: clamp(150px, 18vh, 230px);
+        margin: 0 auto clamp(8px, 1.5vh, 16px);
         perspective: 1200px;
       }
 
       .dice {
-        width: clamp(160px, 18vw, 220px);
-        height: clamp(160px, 18vw, 220px);
+        width: clamp(130px, 15.5vh, 190px);
+        height: clamp(130px, 15.5vh, 190px);
         position: relative;
         margin: 20px auto;
         transform-style: preserve-3d;
@@ -115,8 +126,8 @@
 
       .face {
         position: absolute;
-        width: clamp(160px, 18vw, 220px);
-        height: clamp(160px, 18vw, 220px);
+        width: clamp(130px, 15.5vh, 190px);
+        height: clamp(130px, 15.5vh, 190px);
         border-radius: 8px;
 
         background: linear-gradient(
@@ -135,32 +146,32 @@
         justify-content: center;
         align-items: center;
 
-        font-size: clamp(72px, 8vw, 104px);
+        font-size: clamp(60px, 7vh, 88px);
         font-weight: 900;
         color: var(--azul);
       }
 
       .front {
-        transform: rotateY(0deg) translateZ(clamp(80px, 9vw, 110px));
+        transform: rotateY(0deg) translateZ(clamp(65px, 7.75vh, 95px));
       }
       .back {
-        transform: rotateY(180deg) translateZ(clamp(80px, 9vw, 110px));
+        transform: rotateY(180deg) translateZ(clamp(65px, 7.75vh, 95px));
       }
       .right {
-        transform: rotateY(90deg) translateZ(clamp(80px, 9vw, 110px));
+        transform: rotateY(90deg) translateZ(clamp(65px, 7.75vh, 95px));
       }
       .left {
-        transform: rotateY(-90deg) translateZ(clamp(80px, 9vw, 110px));
+        transform: rotateY(-90deg) translateZ(clamp(65px, 7.75vh, 95px));
       }
       .top {
-        transform: rotateX(90deg) translateZ(clamp(80px, 9vw, 110px));
+        transform: rotateX(90deg) translateZ(clamp(65px, 7.75vh, 95px));
       }
       .bottom {
-        transform: rotateX(-90deg) translateZ(clamp(80px, 9vw, 110px));
+        transform: rotateX(-90deg) translateZ(clamp(65px, 7.75vh, 95px));
       }
 
       #mesa {
-        font-size: clamp(46px, 7vw, 104px);
+        font-size: clamp(40px, 8vh, 92px);
         font-weight: 900;
         letter-spacing: 1px;
         margin: 4px 0 8px;
@@ -181,9 +192,9 @@
         justify-content: center;
         min-width: min(560px, 92vw);
         min-height: 1.8em;
-        padding: 8px 18px;
+        padding: 7px 18px;
         border-radius: 8px;
-        font-size: clamp(22px, 2.6vw, 38px);
+        font-size: clamp(20px, 3.2vh, 34px);
         color: white;
         background: linear-gradient(135deg, var(--coral), var(--azul2));
         margin: 0 0 12px;
@@ -193,11 +204,52 @@
         text-shadow: 0 3px 12px rgba(0, 0, 0, 0.24);
       }
 
+      #cuentaAtras {
+        height: 0;
+        opacity: 0;
+        transform: scale(0.8);
+        transition:
+          opacity 0.18s ease,
+          transform 0.18s ease,
+          height 0.18s ease;
+        color: var(--coral);
+        font-size: clamp(56px, 10vh, 120px);
+        font-weight: 900;
+        line-height: 0.95;
+        text-shadow:
+          0 5px 0 rgba(255, 255, 255, 0.95),
+          0 16px 32px rgba(18, 51, 95, 0.2);
+      }
+
+      #cuentaAtras.show {
+        height: clamp(54px, 10vh, 116px);
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      #cuentaAtras.pop {
+        animation: countdown-pop 0.28s ease;
+      }
+
+      @keyframes countdown-pop {
+        0% {
+          transform: scale(0.72);
+        }
+
+        70% {
+          transform: scale(1.12);
+        }
+
+        100% {
+          transform: scale(1);
+        }
+      }
+
       #fraseAudio {
-        margin: 14px auto 16px;
+        margin: clamp(8px, 1.4vh, 12px) auto clamp(8px, 1.4vh, 12px);
         width: min(900px, 92vw);
-        min-height: 3.6em;
-        font-size: clamp(18px, 2vw, 30px);
+        min-height: 2.4em;
+        font-size: clamp(17px, 2.6vh, 26px);
         color: var(--gris);
         font-weight: 700;
         opacity: 0;
@@ -216,65 +268,131 @@
         display: block;
       }
 
-      .suena-label {
-        display: block;
-        margin-top: 10px;
-        color: var(--azul);
-        font-size: clamp(16px, 1.8vw, 24px);
+      .player {
+        width: min(780px, 92vw);
+        margin: clamp(8px, 1.4vh, 12px) auto clamp(10px, 1.6vh, 14px);
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.92),
+          rgba(237, 246, 255, 0.86)
+        );
+        border: 1px solid rgba(18, 51, 95, 0.14);
+        box-shadow: 0 12px 28px rgba(18, 51, 95, 0.12);
+        display: none;
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "info"
+          "controls"
+          "progress";
+        gap: 7px;
+        align-items: center;
+      }
+
+      .player.show {
+        display: grid;
+      }
+
+      .player-controls {
+        grid-area: controls;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .player-btn {
+        width: 52px;
+        height: 52px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--azul);
+        color: white;
+        font-size: 24px;
         font-weight: 900;
+        cursor: pointer;
+        box-shadow: 0 10px 22px rgba(18, 51, 95, 0.18);
+        transition:
+          transform 0.18s ease,
+          background 0.18s ease,
+          opacity 0.18s ease;
+      }
+
+      .player-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        background: var(--verde);
+      }
+
+      .player-btn:disabled {
+        cursor: default;
+        opacity: 0.36;
+      }
+
+      .player-main {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, var(--coral), var(--azul2));
+        font-size: 30px;
+      }
+
+      .player-info {
+        grid-area: info;
+        min-width: 0;
+        text-align: center;
+        color: var(--gris);
+        font-weight: 800;
+      }
+
+      .player-kicker {
+        display: block;
+        color: rgba(18, 51, 95, 0.7);
+        font-size: 13px;
         text-transform: uppercase;
       }
 
-      .marquee {
-        position: relative;
+      .player-title {
         display: block;
-        width: 100%;
-        margin-top: 8px;
+        margin-top: 3px;
+        font-size: clamp(16px, 2vh, 20px);
+        line-height: 1.18;
         overflow: hidden;
-        border-radius: 8px;
-        background: linear-gradient(135deg, rgba(18, 51, 95, 0.96), rgba(31, 138, 112, 0.96));
-        color: white;
-        box-shadow: 0 12px 28px rgba(18, 51, 95, 0.2);
-      }
-
-      .marquee-track {
-        display: flex;
-        width: max-content;
-        min-width: 200%;
-        animation: marquee 16s linear infinite;
-      }
-
-      .marquee-item {
-        flex: 0 0 auto;
-        min-width: 50%;
-        padding: 12px 44px;
-        font-size: clamp(22px, 3vw, 42px);
-        font-weight: 900;
+        text-overflow: ellipsis;
         white-space: nowrap;
-        text-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
       }
 
-      @keyframes marquee {
-        from {
-          transform: translateX(0);
-        }
+      .player-progress {
+        grid-area: progress;
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr) 52px;
+        gap: 8px;
+        align-items: center;
+        color: rgba(18, 51, 95, 0.78);
+        font-size: 13px;
+        font-weight: 900;
+      }
 
-        to {
-          transform: translateX(-50%);
-        }
+      .time-label {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .range {
+        width: 100%;
+        accent-color: var(--coral);
+        cursor: pointer;
       }
 
       .meta {
         font-size: clamp(16px, 1.7vw, 22px);
         color: rgba(18, 51, 95, 0.82);
-        margin-top: 14px;
+        margin-top: clamp(8px, 1.2vh, 12px);
 
         text-shadow: 0 8px 24px rgba(255, 255, 255, 0.95);
       }
 
       .btn {
-        font-size: clamp(22px, 3vw, 42px);
-        padding: 18px clamp(42px, 7vw, 76px);
+        font-size: clamp(20px, 3.4vh, 38px);
+        padding: clamp(12px, 2vh, 18px) clamp(38px, 7vw, 76px);
         border: none;
         border-radius: 8px;
 
@@ -291,6 +409,12 @@
 
       .btn:hover {
         transform: translateY(-2px) scale(1.02);
+      }
+
+      .btn:disabled {
+        cursor: default;
+        opacity: 0.86;
+        transform: none;
       }
 
       .btn.secondary {
@@ -364,6 +488,83 @@
           opacity: 0;
         }
       }
+
+      @media (max-height: 760px) {
+        .card {
+          padding: 10px 20px;
+        }
+
+        .scene {
+          width: 132px;
+          height: 132px;
+          margin-bottom: 6px;
+        }
+
+        .dice,
+        .face {
+          width: 112px;
+          height: 112px;
+        }
+
+        .face {
+          font-size: 52px;
+        }
+
+        .front {
+          transform: rotateY(0deg) translateZ(56px);
+        }
+        .back {
+          transform: rotateY(180deg) translateZ(56px);
+        }
+        .right {
+          transform: rotateY(90deg) translateZ(56px);
+        }
+        .left {
+          transform: rotateY(-90deg) translateZ(56px);
+        }
+        .top {
+          transform: rotateX(90deg) translateZ(56px);
+        }
+        .bottom {
+          transform: rotateX(-90deg) translateZ(56px);
+        }
+
+        #mesa {
+          font-size: 54px;
+          margin-bottom: 4px;
+        }
+
+        #mensaje {
+          font-size: 24px;
+        }
+
+        #fraseAudio {
+          font-size: 18px;
+          min-height: 2em;
+        }
+
+        .meta {
+          display: none;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .player {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "info"
+            "controls"
+            "progress";
+        }
+
+        .player-info {
+          text-align: center;
+        }
+
+        .player-progress {
+          grid-template-columns: 44px minmax(0, 1fr) 44px;
+        }
+      }
     </style>
   </head>
 
@@ -388,6 +589,58 @@
         <div id="mensaje"></div>
 
         <div id="fraseAudio"></div>
+
+        <div class="player" id="player">
+          <div class="player-info">
+            <span class="player-kicker" id="playerKicker">Playlist</span>
+            <span class="player-title" id="playerTitle"
+              >Sin musica todavia</span
+            >
+          </div>
+          <div class="player-controls">
+            <button
+              class="player-btn"
+              id="prevBtn"
+              type="button"
+              onclick="cancionAnterior()"
+              title="Cancion anterior"
+            >
+              ‹
+            </button>
+            <button
+              class="player-btn player-main"
+              id="playBtn"
+              type="button"
+              onclick="alternarPlay()"
+              title="Play/Pausa"
+            >
+              ▶
+            </button>
+            <button
+              class="player-btn"
+              id="nextBtn"
+              type="button"
+              onclick="cancionSiguienteManual()"
+              title="Siguiente cancion"
+            >
+              ›
+            </button>
+          </div>
+          <div class="player-progress">
+            <span class="time-label" id="currentTime">0:00</span>
+            <input
+              class="range"
+              id="progressRange"
+              type="range"
+              min="0"
+              max="100"
+              value="0"
+              step="0.1"
+              aria-label="Progreso de la cancion"
+            />
+            <span class="time-label" id="durationTime">0:00</span>
+          </div>
+        </div>
 
         <button class="btn" id="btn" onclick="tap()">ASIGNAR MESA</button>
 
@@ -420,6 +673,7 @@
       let timerArmado = null;
       let mesaSonando = null;
       let ultimaCancion = "";
+      let indiceCancionMesa = 0;
       let sesionAudio = 0;
       let audioDesbloqueado = false;
       let fraseMesaActual = "";
@@ -433,61 +687,70 @@
       const overlay = document.getElementById("overlay");
       const audioSorteo = document.getElementById("audioSorteo");
       const audioMesa = document.getElementById("audioMesa");
+      const player = document.getElementById("player");
+      const prevBtn = document.getElementById("prevBtn");
+      const playBtn = document.getElementById("playBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const playerKicker = document.getElementById("playerKicker");
+      const playerTitle = document.getElementById("playerTitle");
+      const progressRange = document.getElementById("progressRange");
+      const currentTimeEl = document.getElementById("currentTime");
+      const durationTimeEl = document.getElementById("durationTime");
 
       const estilosPorMesa = {
         1: {
-          nombre: "rock",
-          etiqueta: "Mesa del rock",
+          nombre: "los que llegan pisando fuerte",
+          etiqueta: "Club de los que llegan pisando fuerte",
           color: "linear-gradient(135deg, #1f2937, #e85d4f)",
           canciones: [
+            "rock/Aerosmith - I Don't Want to Miss a Thing .mp3",
             "rock/Bon Jovi - Livin' On A Prayer [lDK9QqIzhwk].mp3",
-            "rock/AC_DC - Hells Bells (Official 4K Video) [etAIpkdhU9Q].mp3",
+            "rock/Dire Straits - Sultans Of Swing (Official Music Video) [h0ffIJ7ZO4U].mp3",
             "rock/Guns N' Roses - Sweet Child O' Mine (Official Music Video) [1w7OgIMMRc4].mp3",
-            "rock/Metallica_ Nothing Else Matters (Official Music Video) [tAGnKpE4NCI].mp3",
           ],
         },
         2: {
-          nombre: "indie",
-          etiqueta: "Mesa del indie",
+          nombre: "los flequillos estrategicos",
+          etiqueta: "Club de los flequillos estrategicos",
           color: "linear-gradient(135deg, #2467a6, #7c5cff)",
           canciones: [
-            "indie/Leiva - Como Si Fueras a Morir Mañana [DMSTr9JOhBE].mp3",
-            "indie/IZAL - Copacabana (Video Oficial) [Btvxvr64Nkg].mp3",
+            "indie/Arde Bogotá - Los Perros (Video Oficial) [iy-X7U6Znm0].mp3",
             "indie/Dani Fernández - Me has invitado a bailar (Videoclip Oficial) [ZjMGn4Kc7w0].mp3",
-            "indie/Arde Bogotá - Exoplaneta (Audio) [HZgDUvxHvcw].mp3",
+            "indie/Extremoduro - Stand By [ZH05IaSy2hE].mp3",
+            "indie/Leiva - Como Si Fueras a Morir Mañana [DMSTr9JOhBE].mp3",
           ],
         },
         3: {
-          nombre: "pop",
-          etiqueta: "Mesa del pop",
+          nombre: "los estribillos peligrosos",
+          etiqueta: "Mesa de los estribillos peligrosos",
           color: "linear-gradient(135deg, #e85d4f, #f1b84b)",
           canciones: [
-            "pop/Robbie Williams - Angels [luwAMFcc2f8].mp3",
+            "pop/Depeche Mode - Enjoy the Silence (Official Video) [aGSKrC7dGcY].mp3",
             "pop/Michael Jackson - Billie Jean (Official Video) [Zi_XLOBDo_Y].mp3",
-            "pop/Coldplay - Fix You (Official Video) [k4V3Mo61fJM].mp3",
+            "pop/R.E.M. - Losing My Religion (Official HD Music Video) [xwtdhWltSIg].mp3",
             "pop/The Weeknd - Blinding Lights (Official Video) [4NRXx6U8ABQ].mp3",
           ],
         },
         4: {
-          nombre: "rumba",
-          etiqueta: "Mesa de la rumba",
+          nombre: "las palmas sin permiso",
+          etiqueta: "Mesa de las palmas sin permiso",
           color: "linear-gradient(135deg, #1f8a70, #f1b84b)",
           canciones: [
             "rumba/El barrio - Somos los barrieros [xz-ufjce1ow].mp3",
-            "rumba/Los Delinqüentes - La primavera trompetera (Videoclip Oficial) [MfILTRB6h4I].mp3",
-            "rumba/Gipsy Kings - Volare (Nel Blu di Pinto di Blu) (Official HD Video) [X8TOhb_4jU0].mp3",
             "rumba/Estopa - Como Camaron (Videoclip) [JmP89cIGJZM].mp3",
+            "rumba/Estopa - Me Falta el Aliento (Directo Acústico) [SOsFYpBQz80].mp3",
+            "rumba/Gipsy Kings - Volare (Nel Blu di Pinto di Blu) (Official HD Video) [X8TOhb_4jU0].mp3",
           ],
         },
         5: {
-          nombre: "pop rock de los 80",
-          etiqueta: "Mesa del pop rock de los 80",
+          nombre: "los clasicos con flow",
+          etiqueta: "Comando de los clasicos con flow",
           color: "linear-gradient(135deg, #12335f, #f1b84b)",
           canciones: [
-            "Pop rock de los 80/Los Rodriguez - Sin Documentos (Videoclip oficial) [BUKHMGiW_rY].mp3",
+            "Pop rock de los 80/Héroes del Silencio - La chispa adecuada [jnDjEHyhFpU].mp3",
             "Pop rock de los 80/Loquillo Y Los Trogloditas - Cadillac Solitario [vvitGvSA1EI].mp3",
-            "Pop rock de los 80/El Sitio De Mi Recreo [ECVg698j3UI].mp3",
-            "Pop rock de los 80/Antonio Flores - No Dudaria (Video TVE) [F_xbfIgWMHU].mp3",
+            "Pop rock de los 80/Los Rodriguez - Sin Documentos (Videoclip oficial) [BUKHMGiW_rY].mp3",
+            "Pop rock de los 80/Manolo Garcia - Pajaros de Barro [HSpeF-Bu26E].mp3",
           ],
         },
       };
@@ -580,6 +843,7 @@
         fraseAudioEl.classList.remove("show");
         msgEl.removeAttribute("style");
         detenerMusicaMesa();
+        ocultarPlayer();
 
         dice.classList.remove("rolling");
 
@@ -614,21 +878,53 @@
         return archivo
           .replace(/\.mp3$/i, "")
           .replace(/\s*\[[^\]]+\]\s*$/g, "")
-          .replace(/\s*\([^)]*(Official|Video|Videoclip|Audio|Remasterizado|HD|4K)[^)]*\)\s*/gi, " ")
+          .replace(
+            /\s*\([^)]*(Official|Video|Videoclip|Audio|Remasterizado|HD|4K)[^)]*\)\s*/gi,
+            " ",
+          )
           .replace(/_/g, " ")
           .replace(/\s+/g, " ")
           .trim();
       }
 
+      function formatearTiempo(segundos) {
+        if (!Number.isFinite(segundos)) return "0:00";
+
+        const minutos = Math.floor(segundos / 60);
+        const resto = Math.floor(segundos % 60)
+          .toString()
+          .padStart(2, "0");
+
+        return `${minutos}:${resto}`;
+      }
+
+      function actualizarProgreso() {
+        const duracion = audioMesa.duration || 0;
+        const actual = audioMesa.currentTime || 0;
+        const porcentaje = duracion ? (actual / duracion) * 100 : 0;
+
+        progressRange.value = porcentaje;
+        currentTimeEl.textContent = formatearTiempo(actual);
+        durationTimeEl.textContent = formatearTiempo(duracion);
+      }
+
+      function resetearProgreso() {
+        progressRange.value = 0;
+        currentTimeEl.textContent = "0:00";
+        durationTimeEl.textContent = "0:00";
+      }
+
       function detenerMusicaMesa() {
         sesionAudio++;
-        window.speechSynthesis?.cancel();
         mesaSonando = null;
         ultimaCancion = "";
+        indiceCancionMesa = 0;
         fraseMesaActual = "";
         audioMesa.pause();
         audioMesa.removeAttribute("src");
         audioMesa.load();
+        resetearProgreso();
+        ocultarPlayer();
       }
 
       function detenerSorteo() {
@@ -663,22 +959,48 @@
         const estilo = estilosPorMesa[numeroMesa];
 
         if (!estilo) return null;
+        if (!estilo.canciones.length) return null;
 
-        let cancionesDisponibles = estilo.canciones;
-
-        if (estilo.canciones.length > 1) {
-          cancionesDisponibles = estilo.canciones.filter(
-            (cancion) => cancion !== ultimaCancion,
-          );
-        }
-
-        const cancion = elegirAleatorio(cancionesDisponibles);
+        const indiceSeguro = Math.max(
+          0,
+          Math.min(indiceCancionMesa, estilo.canciones.length - 1),
+        );
+        const cancion = estilo.canciones[indiceSeguro];
+        indiceCancionMesa = indiceSeguro;
         ultimaCancion = cancion;
 
         return {
           ruta: cancion,
           titulo: limpiarNombreCancion(cancion),
+          indice: indiceSeguro,
+          total: estilo.canciones.length,
         };
+      }
+
+      function actualizarPlayer(cancion = null) {
+        const estilo = estilosPorMesa[mesaSonando];
+        const total = estilo?.canciones.length || 0;
+
+        if (!mesaSonando || !cancion || !total) {
+          ocultarPlayer();
+          return;
+        }
+
+        player.classList.add("show");
+        playerKicker.textContent = `Cancion ${indiceCancionMesa + 1} de ${total}`;
+        playerTitle.textContent = cancion.titulo;
+        prevBtn.disabled = indiceCancionMesa === 0;
+        nextBtn.disabled = indiceCancionMesa >= total - 1;
+        playBtn.textContent = audioMesa.paused ? "▶" : "❚❚";
+      }
+
+      function ocultarPlayer() {
+        player.classList.remove("show");
+        playerTitle.textContent = "Sin musica todavia";
+        playerKicker.textContent = "Playlist";
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        playBtn.textContent = "▶";
       }
 
       function reproducirCancion(cancion, sesion) {
@@ -689,11 +1011,13 @@
         audioMesa.pause();
         audioMesa.src = encodeURI(cancion.ruta);
         audioMesa.currentTime = 0;
-        audioMesa.volume = 0.72;
+        audioMesa.volume = 1;
+        resetearProgreso();
         audioMesa
           .play()
           .then(() => {
             mostrarCancionActual(cancion);
+            actualizarPlayer(cancion);
           })
           .catch(() => {
             fraseAudioEl.textContent =
@@ -706,56 +1030,56 @@
       function reproducirSiguienteCancionMesa() {
         if (!mesaSonando) return;
 
+        const estilo = estilosPorMesa[mesaSonando];
+
+        if (!estilo || indiceCancionMesa >= estilo.canciones.length - 1) {
+          playBtn.textContent = "▶";
+          nextBtn.disabled = true;
+          playerKicker.textContent = "Playlist terminada";
+          return;
+        }
+
+        indiceCancionMesa++;
         const cancion = prepararMusicaMesa(mesaSonando);
 
         reproducirCancion(cancion, sesionAudio);
       }
 
-      function obtenerVozEspanol() {
-        const voces = window.speechSynthesis?.getVoices?.() || [];
-
-        return (
-          voces.find((voz) => voz.lang?.toLowerCase().startsWith("es-es")) ||
-          voces.find((voz) => voz.lang?.toLowerCase().startsWith("es")) ||
-          voces[0]
-        );
+      function cancionSiguienteManual() {
+        reproducirSiguienteCancionMesa();
       }
 
-      function narrarAntesDeMusica(texto, cancion, sesion) {
-        if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
-          reproducirCancion(cancion, sesion);
+      function cancionAnterior() {
+        if (!mesaSonando) return;
+
+        if (audioMesa.currentTime > 3) {
+          audioMesa.currentTime = 0;
+          actualizarProgreso();
           return;
         }
 
-        window.speechSynthesis.cancel();
+        if (indiceCancionMesa === 0) return;
 
-        const voz = new SpeechSynthesisUtterance(texto);
-        let musicaLanzada = false;
+        indiceCancionMesa--;
+        const cancion = prepararMusicaMesa(mesaSonando);
 
-        const lanzarMusica = () => {
-          if (musicaLanzada) return;
+        reproducirCancion(cancion, sesionAudio);
+      }
 
-          musicaLanzada = true;
-          reproducirCancion(cancion, sesion);
-        };
+      function alternarPlay() {
+        if (!mesaSonando || !audioMesa.src) return;
 
-        voz.lang = "es-ES";
-        voz.rate = 0.96;
-        voz.pitch = 1.02;
-        voz.volume = 1;
-
-        const vozEspanol = obtenerVozEspanol();
-
-        if (vozEspanol) {
-          voz.voice = vozEspanol;
+        if (audioMesa.paused) {
+          audioMesa
+            .play()
+            .then(() => {
+              playBtn.textContent = "❚❚";
+            })
+            .catch(() => {});
+        } else {
+          audioMesa.pause();
+          playBtn.textContent = "▶";
         }
-
-        voz.onend = lanzarMusica;
-        voz.onerror = lanzarMusica;
-
-        window.speechSynthesis.speak(voz);
-
-        setTimeout(lanzarMusica, Math.min(6500, 1800 + texto.length * 55));
       }
 
       function formatearListaMesas(lista) {
@@ -815,17 +1139,9 @@
         setTimeout(() => {
           if (cancion) {
             const frase = escaparHtml(texto);
-            const titulo = escaparHtml(cancion.titulo);
 
             fraseAudioEl.innerHTML = `
               <span class="frase-linea">${frase}</span>
-              <span class="suena-label">Ahora suena:</span>
-              <div class="marquee" aria-label="Ahora suena: ${titulo}">
-                <div class="marquee-track">
-                  <span class="marquee-item">${titulo}</span>
-                  <span class="marquee-item">${titulo}</span>
-                </div>
-              </div>
             `;
           } else {
             fraseAudioEl.textContent = texto;
@@ -878,7 +1194,6 @@
         fraseAudioEl.textContent = "";
         fraseAudioEl.classList.remove("show");
         detenerMusicaMesa();
-        window.speechSynthesis?.cancel();
 
         dice.classList.add("rolling");
         audioSorteo.currentTime = 0;
@@ -913,7 +1228,6 @@
         sesionAudio++;
         detenerSorteo();
         audioMesa.pause();
-        window.speechSynthesis?.cancel();
 
         const index = Math.floor(Math.random() * mesas.length);
 
@@ -935,13 +1249,11 @@
           const estilo = estilosPorMesa[numero];
           mesaSonando = numero;
           ultimaCancion = "";
+          indiceCancionMesa = 0;
           const sesionMesa = sesionAudio;
           const cancion = prepararMusicaMesa(numero);
           const frase = obtenerFraseDinamica(numero);
           fraseMesaActual = frase;
-          const fraseCompleta = cancion
-            ? `${fraseMesaActual} Ahora suena: ${cancion.titulo}.`
-            : fraseMesaActual;
 
           mesaEl.textContent = "MESA " + numero;
 
@@ -951,7 +1263,7 @@
           msgEl.style.background = estilo?.color || "";
 
           mostrarTexto(fraseMesaActual, cancion);
-          narrarAntesDeMusica(fraseCompleta, cancion, sesionMesa);
+          reproducirCancion(cancion, sesionMesa);
 
           actualizarRestantes();
 
@@ -960,6 +1272,7 @@
       }
 
       function tap() {
+        window.scrollTo(0, 0);
         desbloquearAudio();
 
         if (mesas.length === 0) {
@@ -984,6 +1297,21 @@
       });
 
       audioMesa.addEventListener("ended", reproducirSiguienteCancionMesa);
+      audioMesa.addEventListener("loadedmetadata", actualizarProgreso);
+      audioMesa.addEventListener("timeupdate", actualizarProgreso);
+      audioMesa.addEventListener("play", () => {
+        playBtn.textContent = "❚❚";
+      });
+      audioMesa.addEventListener("pause", () => {
+        playBtn.textContent = "▶";
+      });
+      progressRange.addEventListener("input", () => {
+        if (!audioMesa.duration) return;
+
+        audioMesa.currentTime =
+          (Number(progressRange.value) / 100) * audioMesa.duration;
+        actualizarProgreso();
+      });
 
       reiniciar();
     </script>
