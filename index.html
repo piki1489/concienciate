@@ -588,6 +588,8 @@
 
         <div id="mensaje"></div>
 
+        <div id="cuentaAtras" aria-live="polite"></div>
+
         <div id="fraseAudio"></div>
 
         <div class="player" id="player">
@@ -669,8 +671,8 @@
 
     <script>
       let mesas = [];
-      let armado = false;
-      let timerArmado = null;
+      let asignandoMesa = false;
+      let cuentaTimer = null;
       let mesaSonando = null;
       let ultimaCancion = "";
       let indiceCancionMesa = 0;
@@ -681,6 +683,7 @@
       const dice = document.getElementById("dice");
       const mesaEl = document.getElementById("mesa");
       const msgEl = document.getElementById("mensaje");
+      const cuentaEl = document.getElementById("cuentaAtras");
       const fraseAudioEl = document.getElementById("fraseAudio");
       const restEl = document.getElementById("restantes");
       const btn = document.getElementById("btn");
@@ -714,9 +717,9 @@
           etiqueta: "Club de los flequillos estrategicos",
           color: "linear-gradient(135deg, #2467a6, #7c5cff)",
           canciones: [
+            "indie/Extremoduro - Stand By [ZH05IaSy2hE].mp3",
             "indie/Arde Bogotá - Los Perros (Video Oficial) [iy-X7U6Znm0].mp3",
             "indie/Dani Fernández - Me has invitado a bailar (Videoclip Oficial) [ZjMGn4Kc7w0].mp3",
-            "indie/Extremoduro - Stand By [ZH05IaSy2hE].mp3",
             "indie/Leiva - Como Si Fueras a Morir Mañana [DMSTr9JOhBE].mp3",
           ],
         },
@@ -726,9 +729,9 @@
           color: "linear-gradient(135deg, #e85d4f, #f1b84b)",
           canciones: [
             "pop/Depeche Mode - Enjoy the Silence (Official Video) [aGSKrC7dGcY].mp3",
+            "pop/The Weeknd - Blinding Lights (Official Video) [4NRXx6U8ABQ].mp3",
             "pop/Michael Jackson - Billie Jean (Official Video) [Zi_XLOBDo_Y].mp3",
             "pop/R.E.M. - Losing My Religion (Official HD Music Video) [xwtdhWltSIg].mp3",
-            "pop/The Weeknd - Blinding Lights (Official Video) [4NRXx6U8ABQ].mp3",
           ],
         },
         4: {
@@ -736,10 +739,10 @@
           etiqueta: "Mesa de las palmas sin permiso",
           color: "linear-gradient(135deg, #1f8a70, #f1b84b)",
           canciones: [
-            "rumba/El barrio - Somos los barrieros [xz-ufjce1ow].mp3",
             "rumba/Estopa - Como Camaron (Videoclip) [JmP89cIGJZM].mp3",
+            "rumba/Los Delinqüentes - El aire de la calle [RbRzHhmVR64].mp3",
             "rumba/Estopa - Me Falta el Aliento (Directo Acústico) [SOsFYpBQz80].mp3",
-            "rumba/Gipsy Kings - Volare (Nel Blu di Pinto di Blu) (Official HD Video) [X8TOhb_4jU0].mp3",
+            "rumba/El barrio - Somos los barrieros [xz-ufjce1ow].mp3",
           ],
         },
         5: {
@@ -747,10 +750,10 @@
           etiqueta: "Comando de los clasicos con flow",
           color: "linear-gradient(135deg, #12335f, #f1b84b)",
           canciones: [
+            "Pop rock de los 80/Manolo Garcia - Pajaros de Barro [HSpeF-Bu26E].mp3",
             "Pop rock de los 80/Héroes del Silencio - La chispa adecuada [jnDjEHyhFpU].mp3",
             "Pop rock de los 80/Loquillo Y Los Trogloditas - Cadillac Solitario [vvitGvSA1EI].mp3",
             "Pop rock de los 80/Los Rodriguez - Sin Documentos (Videoclip oficial) [BUKHMGiW_rY].mp3",
-            "Pop rock de los 80/Manolo Garcia - Pajaros de Barro [HSpeF-Bu26E].mp3",
           ],
         },
       };
@@ -837,8 +840,10 @@
         }
 
         actualizarRestantes();
-        desarmar();
+        desbloquearBotonAsignar();
 
+        cuentaEl.textContent = "";
+        cuentaEl.classList.remove("show", "pop");
         fraseAudioEl.textContent = "";
         fraseAudioEl.classList.remove("show");
         msgEl.removeAttribute("style");
@@ -1184,12 +1189,37 @@
         confetiSuave();
       }
 
-      function armar() {
-        armado = true;
+      function bloquearBotonAsignar() {
+        asignandoMesa = true;
+        btn.disabled = true;
+        btn.textContent = "ASIGNANDO...";
+      }
 
-        btn.textContent = "CONFIRMAR";
+      function desbloquearBotonAsignar() {
+        asignandoMesa = false;
+        btn.disabled = false;
+        btn.textContent = "ASIGNAR MESA";
+        clearTimeout(cuentaTimer);
+        cuentaTimer = null;
+      }
 
-        msgEl.textContent = "Pulsa otra vez para confirmar la mesa.";
+      function mostrarCuentaAtras(valor) {
+        cuentaEl.textContent = valor;
+        cuentaEl.classList.add("show");
+        cuentaEl.classList.remove("pop");
+
+        void cuentaEl.offsetWidth;
+
+        cuentaEl.classList.add("pop");
+      }
+
+      function iniciarAsignacionMesa() {
+        if (asignandoMesa) return;
+
+        bloquearBotonAsignar();
+
+        msgEl.textContent = "Asignando mesa...";
+        msgEl.removeAttribute("style");
 
         fraseAudioEl.textContent = "";
         fraseAudioEl.classList.remove("show");
@@ -1200,27 +1230,32 @@
         audioSorteo.volume = 0.45;
         audioSorteo.play().catch(() => {});
 
-        clearTimeout(timerArmado);
+        const pasos = ["3", "2", "1", "🎲"];
+        let indicePaso = 0;
 
-        timerArmado = setTimeout(desarmar, 3000);
-      }
+        mostrarCuentaAtras(pasos[indicePaso]);
 
-      function desarmar() {
-        armado = false;
+        function siguientePaso() {
+          indicePaso++;
 
-        btn.textContent = "ASIGNAR MESA";
+          if (indicePaso < pasos.length) {
+            mostrarCuentaAtras(pasos[indicePaso]);
+            cuentaTimer = setTimeout(siguientePaso, 650);
+            return;
+          }
 
-        clearTimeout(timerArmado);
+          cuentaEl.classList.remove("show", "pop");
+          cuentaEl.textContent = "";
 
-        timerArmado = null;
-
-        if (mesas.length > 0) {
-          dice.classList.remove("rolling");
+          sacarMesaConfirmada();
         }
+
+        cuentaTimer = setTimeout(siguientePaso, 650);
       }
 
       function sacarMesaConfirmada() {
         if (mesas.length === 0) {
+          desbloquearBotonAsignar();
           overlay.classList.add("show");
           return;
         }
@@ -1268,6 +1303,8 @@
           actualizarRestantes();
 
           animarTexto();
+
+          desbloquearBotonAsignar();
         }, 1250);
       }
 
@@ -1275,19 +1312,14 @@
         window.scrollTo(0, 0);
         desbloquearAudio();
 
+        if (asignandoMesa) return;
+
         if (mesas.length === 0) {
           overlay.classList.add("show");
           return;
         }
 
-        if (!armado) {
-          armar();
-          return;
-        }
-
-        desarmar();
-
-        sacarMesaConfirmada();
+        iniciarAsignacionMesa();
       }
 
       document.addEventListener("keydown", (e) => {
