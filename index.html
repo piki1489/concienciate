@@ -269,9 +269,9 @@
       }
 
       .player {
-        width: min(780px, 92vw);
-        margin: clamp(8px, 1.4vh, 12px) auto clamp(10px, 1.6vh, 14px);
-        padding: 10px 14px;
+        width: min(620px, 90vw);
+        margin: clamp(6px, 1vh, 10px) auto clamp(8px, 1.2vh, 12px);
+        padding: 8px 12px;
         border-radius: 8px;
         background: linear-gradient(
           135deg,
@@ -281,12 +281,11 @@
         border: 1px solid rgba(18, 51, 95, 0.14);
         box-shadow: 0 12px 28px rgba(18, 51, 95, 0.12);
         display: none;
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) auto;
         grid-template-areas:
-          "info"
-          "controls"
-          "progress";
-        gap: 7px;
+          "info controls"
+          "progress progress";
+        gap: 6px 10px;
         align-items: center;
       }
 
@@ -299,17 +298,17 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 12px;
+        gap: 7px;
       }
 
       .player-btn {
-        width: 52px;
-        height: 52px;
+        width: 38px;
+        height: 38px;
         border: 0;
         border-radius: 8px;
         background: var(--azul);
         color: white;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 900;
         cursor: pointer;
         box-shadow: 0 10px 22px rgba(18, 51, 95, 0.18);
@@ -330,16 +329,16 @@
       }
 
       .player-main {
-        width: 64px;
-        height: 64px;
+        width: 44px;
+        height: 44px;
         background: linear-gradient(135deg, var(--coral), var(--azul2));
-        font-size: 30px;
+        font-size: 22px;
       }
 
       .player-info {
         grid-area: info;
         min-width: 0;
-        text-align: center;
+        text-align: left;
         color: var(--gris);
         font-weight: 800;
       }
@@ -347,14 +346,14 @@
       .player-kicker {
         display: block;
         color: rgba(18, 51, 95, 0.7);
-        font-size: 13px;
+        font-size: 11px;
         text-transform: uppercase;
       }
 
       .player-title {
         display: block;
-        margin-top: 3px;
-        font-size: clamp(16px, 2vh, 20px);
+        margin-top: 1px;
+        font-size: clamp(14px, 1.7vh, 17px);
         line-height: 1.18;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -364,11 +363,11 @@
       .player-progress {
         grid-area: progress;
         display: grid;
-        grid-template-columns: 52px minmax(0, 1fr) 52px;
-        gap: 8px;
+        grid-template-columns: 44px minmax(0, 1fr) 44px;
+        gap: 7px;
         align-items: center;
         color: rgba(18, 51, 95, 0.78);
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 900;
       }
 
@@ -673,12 +672,13 @@
       let mesas = [];
       let asignandoMesa = false;
       let cuentaTimer = null;
-      let mesaSonando = null;
-      let ultimaCancion = "";
-      let indiceCancionMesa = 0;
+      let colaCanciones = [];
+      let indiceCancion = -1;
+      let cancionActual = null;
       let sesionAudio = 0;
       let audioDesbloqueado = false;
       let fraseMesaActual = "";
+      const CLAVE_CANCIONES_USADAS = "concienciate.cancionesUsadas.v1";
 
       const dice = document.getElementById("dice");
       const mesaEl = document.getElementById("mesa");
@@ -700,63 +700,34 @@
       const currentTimeEl = document.getElementById("currentTime");
       const durationTimeEl = document.getElementById("durationTime");
 
-      const estilosPorMesa = {
-        1: {
-          nombre: "los que llegan pisando fuerte",
-          etiqueta: "Club de los que llegan pisando fuerte",
-          color: "linear-gradient(135deg, #1f2937, #e85d4f)",
-          canciones: [
-            "rock/Aerosmith - I Don't Want to Miss a Thing .mp3",
-            "rock/Bon Jovi - Livin' On A Prayer [lDK9QqIzhwk].mp3",
-            "rock/Dire Straits - Sultans Of Swing (Official Music Video) [h0ffIJ7ZO4U].mp3",
-            "rock/Guns N' Roses - Sweet Child O' Mine (Official Music Video) [1w7OgIMMRc4].mp3",
-          ],
-        },
-        2: {
-          nombre: "los flequillos estrategicos",
-          etiqueta: "Club de los flequillos estrategicos",
-          color: "linear-gradient(135deg, #2467a6, #7c5cff)",
-          canciones: [
-            "indie/Extremoduro - Stand By [ZH05IaSy2hE].mp3",
-            "indie/Arde Bogotá - Los Perros (Video Oficial) [iy-X7U6Znm0].mp3",
-            "indie/Dani Fernández - Me has invitado a bailar (Videoclip Oficial) [ZjMGn4Kc7w0].mp3",
-            "indie/Leiva - Como Si Fueras a Morir Mañana [DMSTr9JOhBE].mp3",
-          ],
-        },
-        3: {
-          nombre: "los estribillos peligrosos",
-          etiqueta: "Mesa de los estribillos peligrosos",
-          color: "linear-gradient(135deg, #e85d4f, #f1b84b)",
-          canciones: [
-            "pop/Depeche Mode - Enjoy the Silence (Official Video) [aGSKrC7dGcY].mp3",
-            "pop/The Weeknd - Blinding Lights (Official Video) [4NRXx6U8ABQ].mp3",
-            "pop/Michael Jackson - Billie Jean (Official Video) [Zi_XLOBDo_Y].mp3",
-            "pop/R.E.M. - Losing My Religion (Official HD Music Video) [xwtdhWltSIg].mp3",
-          ],
-        },
-        4: {
-          nombre: "las palmas sin permiso",
-          etiqueta: "Mesa de las palmas sin permiso",
-          color: "linear-gradient(135deg, #1f8a70, #f1b84b)",
-          canciones: [
-            "rumba/Estopa - Como Camaron (Videoclip) [JmP89cIGJZM].mp3",
-            "rumba/Los Delinqüentes - El aire de la calle [RbRzHhmVR64].mp3",
-            "rumba/Estopa - Me Falta el Aliento (Directo Acústico) [SOsFYpBQz80].mp3",
-            "rumba/El barrio - Somos los barrieros [xz-ufjce1ow].mp3",
-          ],
-        },
-        5: {
-          nombre: "los clasicos con flow",
-          etiqueta: "Comando de los clasicos con flow",
-          color: "linear-gradient(135deg, #12335f, #f1b84b)",
-          canciones: [
-            "Pop rock de los 80/Manolo Garcia - Pajaros de Barro [HSpeF-Bu26E].mp3",
-            "Pop rock de los 80/Héroes del Silencio - La chispa adecuada [jnDjEHyhFpU].mp3",
-            "Pop rock de los 80/Loquillo Y Los Trogloditas - Cadillac Solitario [vvitGvSA1EI].mp3",
-            "Pop rock de los 80/Los Rodriguez - Sin Documentos (Videoclip oficial) [BUKHMGiW_rY].mp3",
-          ],
-        },
-      };
+      const CANCIONES = [
+        "canciones/Aerosmith - I Don't Want to Miss a Thing .mp3",
+        "canciones/Extremoduro - La vereda de la puerta de atras.mp3",
+        "canciones/Bon Jovi - Livin' On A Prayer [lDK9QqIzhwk].mp3",
+        "canciones/Dire Straits - Sultans Of Swing (Official Music Video) [h0ffIJ7ZO4U].mp3",
+        "canciones/BON JOVI - BED OF ROSES.mp3",
+        "canciones/Guns N' Roses - Sweet Child O' Mine (Official Music Video) [1w7OgIMMRc4].mp3",
+        "canciones/Extremoduro - Stand By [ZH05IaSy2hE].mp3",
+        "canciones/Arde Bogotá - Los Perros.mp3",
+        "canciones/Dani Fernández - Me has invitado a bailar (Videoclip Oficial) [ZjMGn4Kc7w0].mp3",
+        "canciones/Leiva - Como Si Fueras a Morir Mañana [DMSTr9JOhBE].mp3",
+        "canciones/Depeche Mode - Enjoy the Silence.mp3",
+        "canciones/The Weeknd - Blinding Lights (Official Video) [4NRXx6U8ABQ].mp3",
+        "canciones/Extremoduro - Salir.mp3",
+        "canciones/BON JOVI - ALWAYS.mp3",
+        "canciones/Michael Jackson - Billie Jean (Official Video) [Zi_XLOBDo_Y].mp3",
+        "canciones/R.E.M. - Losing My Religion (Official HD Music Video) [xwtdhWltSIg].mp3",
+        "canciones/Estopa - Como Camaron (Videoclip) [JmP89cIGJZM].mp3",
+        "canciones/Los Delinqüentes - El aire de la calle [RbRzHhmVR64].mp3",
+        "canciones/Estopa - Me Falta el Aliento (Directo Acústico) [SOsFYpBQz80].mp3",
+        "canciones/Depeche Mode - Personal Jesus.mp3",
+        "canciones/Alan Parsons Project - Eye In The Sky.mp3",
+        "canciones/Gipsy Kings - Volare (Nel Blu di Pinto di Blu) (Official HD Video) [X8TOhb_4jU0].mp3",
+        "canciones/Manolo Garcia - Pajaros de Barro [HSpeF-Bu26E].mp3",
+        "canciones/Héroes del Silencio - La chispa adecuada [jnDjEHyhFpU].mp3",
+        "canciones/Loquillo Y Los Trogloditas - Cadillac Solitario [vvitGvSA1EI].mp3",
+        "canciones/Los Rodriguez - Sin Documentos (Videoclip oficial) [BUKHMGiW_rY].mp3",
+      ];
 
       /*
         Frases dinámicas para acompañar cada asignación:
@@ -847,7 +818,7 @@
         fraseAudioEl.textContent = "";
         fraseAudioEl.classList.remove("show");
         msgEl.removeAttribute("style");
-        detenerMusicaMesa();
+        detenerMusica();
         ocultarPlayer();
 
         dice.classList.remove("rolling");
@@ -919,11 +890,82 @@
         durationTimeEl.textContent = "0:00";
       }
 
-      function detenerMusicaMesa() {
+      function obtenerTodasLasCanciones() {
+        return CANCIONES.map((ruta) => ({
+          ruta,
+          titulo: limpiarNombreCancion(ruta),
+        }));
+      }
+
+      function mezclar(lista) {
+        const copia = [...lista];
+
+        for (let i = copia.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copia[i], copia[j]] = [copia[j], copia[i]];
+        }
+
+        return copia;
+      }
+
+      function leerCancionesUsadas() {
+        try {
+          const guardadas = JSON.parse(
+            localStorage.getItem(CLAVE_CANCIONES_USADAS) || "[]",
+          );
+
+          return Array.isArray(guardadas) ? guardadas : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function guardarCancionesUsadas(rutas) {
+        try {
+          localStorage.setItem(CLAVE_CANCIONES_USADAS, JSON.stringify(rutas));
+        } catch {}
+      }
+
+      function marcarCancionUsada(ruta) {
+        const todas = obtenerTodasLasCanciones().map((cancion) => cancion.ruta);
+        const usadas = leerCancionesUsadas().filter((usada) =>
+          todas.includes(usada),
+        );
+
+        if (!usadas.includes(ruta)) {
+          usadas.push(ruta);
+        }
+
+        guardarCancionesUsadas(usadas);
+      }
+
+      function prepararColaCanciones(excluirRuta = "") {
+        const todas = obtenerTodasLasCanciones();
+        const rutasValidas = todas.map((cancion) => cancion.ruta);
+        let usadas = leerCancionesUsadas().filter((ruta) =>
+          rutasValidas.includes(ruta),
+        );
+
+        let disponibles = todas.filter(
+          (cancion) =>
+            !usadas.includes(cancion.ruta) && cancion.ruta !== excluirRuta,
+        );
+
+        if (!disponibles.length) {
+          usadas = excluirRuta ? [excluirRuta] : [];
+          guardarCancionesUsadas(usadas);
+          disponibles = todas.filter((cancion) => cancion.ruta !== excluirRuta);
+        }
+
+        colaCanciones = mezclar(disponibles);
+        indiceCancion = -1;
+      }
+
+      function detenerMusica() {
         sesionAudio++;
-        mesaSonando = null;
-        ultimaCancion = "";
-        indiceCancionMesa = 0;
+        cancionActual = null;
+        colaCanciones = [];
+        indiceCancion = -1;
         fraseMesaActual = "";
         audioMesa.pause();
         audioMesa.removeAttribute("src");
@@ -960,42 +1002,19 @@
         }
       }
 
-      function prepararMusicaMesa(numeroMesa) {
-        const estilo = estilosPorMesa[numeroMesa];
-
-        if (!estilo) return null;
-        if (!estilo.canciones.length) return null;
-
-        const indiceSeguro = Math.max(
-          0,
-          Math.min(indiceCancionMesa, estilo.canciones.length - 1),
-        );
-        const cancion = estilo.canciones[indiceSeguro];
-        indiceCancionMesa = indiceSeguro;
-        ultimaCancion = cancion;
-
-        return {
-          ruta: cancion,
-          titulo: limpiarNombreCancion(cancion),
-          indice: indiceSeguro,
-          total: estilo.canciones.length,
-        };
-      }
-
       function actualizarPlayer(cancion = null) {
-        const estilo = estilosPorMesa[mesaSonando];
-        const total = estilo?.canciones.length || 0;
+        const total = obtenerTodasLasCanciones().length;
 
-        if (!mesaSonando || !cancion || !total) {
+        if (!cancion || !total) {
           ocultarPlayer();
           return;
         }
 
         player.classList.add("show");
-        playerKicker.textContent = `Cancion ${indiceCancionMesa + 1} de ${total}`;
+        playerKicker.textContent = `Playlist continua · ${total} canciones`;
         playerTitle.textContent = cancion.titulo;
-        prevBtn.disabled = indiceCancionMesa === 0;
-        nextBtn.disabled = indiceCancionMesa >= total - 1;
+        prevBtn.disabled = indiceCancion <= 0;
+        nextBtn.disabled = total <= 1;
         playBtn.textContent = audioMesa.paused ? "▶" : "❚❚";
       }
 
@@ -1013,6 +1032,7 @@
         if (sesion && sesion !== sesionAudio) return;
 
         detenerSorteo();
+        cancionActual = cancion;
         audioMesa.pause();
         audioMesa.src = encodeURI(cancion.ruta);
         audioMesa.currentTime = 0;
@@ -1021,10 +1041,11 @@
         audioMesa
           .play()
           .then(() => {
-            mostrarCancionActual(cancion);
+            marcarCancionUsada(cancion.ruta);
             actualizarPlayer(cancion);
           })
           .catch(() => {
+            cancionActual = null;
             fraseAudioEl.textContent =
               "La tele ha bloqueado el sonido. Pulsa ASIGNAR MESA otra vez para activarlo.";
             fraseAudioEl.classList.add("show");
@@ -1032,30 +1053,28 @@
           });
       }
 
-      function reproducirSiguienteCancionMesa() {
-        if (!mesaSonando) return;
+      function reproducirSiguienteCancion() {
+        sesionAudio++;
 
-        const estilo = estilosPorMesa[mesaSonando];
-
-        if (!estilo || indiceCancionMesa >= estilo.canciones.length - 1) {
-          playBtn.textContent = "▶";
-          nextBtn.disabled = true;
-          playerKicker.textContent = "Playlist terminada";
-          return;
+        if (
+          !colaCanciones.length ||
+          indiceCancion >= colaCanciones.length - 1
+        ) {
+          prepararColaCanciones(cancionActual?.ruta || "");
         }
 
-        indiceCancionMesa++;
-        const cancion = prepararMusicaMesa(mesaSonando);
+        indiceCancion++;
+        const cancion = colaCanciones[indiceCancion];
 
         reproducirCancion(cancion, sesionAudio);
       }
 
       function cancionSiguienteManual() {
-        reproducirSiguienteCancionMesa();
+        reproducirSiguienteCancion();
       }
 
       function cancionAnterior() {
-        if (!mesaSonando) return;
+        if (!cancionActual) return;
 
         if (audioMesa.currentTime > 3) {
           audioMesa.currentTime = 0;
@@ -1063,16 +1082,17 @@
           return;
         }
 
-        if (indiceCancionMesa === 0) return;
+        if (indiceCancion <= 0) return;
 
-        indiceCancionMesa--;
-        const cancion = prepararMusicaMesa(mesaSonando);
+        sesionAudio++;
+        indiceCancion--;
+        const cancion = colaCanciones[indiceCancion];
 
         reproducirCancion(cancion, sesionAudio);
       }
 
       function alternarPlay() {
-        if (!mesaSonando || !audioMesa.src) return;
+        if (!cancionActual || !audioMesa.src) return;
 
         if (audioMesa.paused) {
           audioMesa
@@ -1156,10 +1176,6 @@
         }, 80);
       }
 
-      function mostrarCancionActual(cancion) {
-        mostrarTexto(fraseMesaActual, cancion);
-      }
-
       function confetiSuave() {
         for (let i = 0; i < 14; i++) {
           const s = document.createElement("div");
@@ -1223,7 +1239,6 @@
 
         fraseAudioEl.textContent = "";
         fraseAudioEl.classList.remove("show");
-        detenerMusicaMesa();
 
         dice.classList.add("rolling");
         audioSorteo.currentTime = 0;
@@ -1260,9 +1275,7 @@
           return;
         }
 
-        sesionAudio++;
         detenerSorteo();
-        audioMesa.pause();
 
         const index = Math.floor(Math.random() * mesas.length);
 
@@ -1281,24 +1294,19 @@
         }, 40);
 
         setTimeout(() => {
-          const estilo = estilosPorMesa[numero];
-          mesaSonando = numero;
-          ultimaCancion = "";
-          indiceCancionMesa = 0;
-          const sesionMesa = sesionAudio;
-          const cancion = prepararMusicaMesa(numero);
           const frase = obtenerFraseDinamica(numero);
           fraseMesaActual = frase;
 
           mesaEl.textContent = "MESA " + numero;
 
-          msgEl.textContent = estilo
-            ? estilo.etiqueta.toUpperCase()
-            : "MESA ASIGNADA";
-          msgEl.style.background = estilo?.color || "";
+          msgEl.textContent = "MESA ASIGNADA";
+          msgEl.removeAttribute("style");
 
-          mostrarTexto(fraseMesaActual, cancion);
-          reproducirCancion(cancion, sesionMesa);
+          mostrarTexto(fraseMesaActual);
+
+          if (!cancionActual) {
+            reproducirSiguienteCancion();
+          }
 
           actualizarRestantes();
 
@@ -1328,7 +1336,7 @@
         }
       });
 
-      audioMesa.addEventListener("ended", reproducirSiguienteCancionMesa);
+      audioMesa.addEventListener("ended", reproducirSiguienteCancion);
       audioMesa.addEventListener("loadedmetadata", actualizarProgreso);
       audioMesa.addEventListener("timeupdate", actualizarProgreso);
       audioMesa.addEventListener("play", () => {
