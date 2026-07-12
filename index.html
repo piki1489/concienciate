@@ -719,7 +719,9 @@
       let cancionesUsuario = [];
       let urlCancionTemporal = "";
       let sesionAudio = 0;
-      let audioDesbloqueado = false;
+      let usuarioPausoMusica = false;
+      let pausaInterna = false;
+      let protegiendoMusica = false;
       let fraseMesaActual = "";
       const CLAVE_CANCIONES_USADAS = "concienciate.cancionesUsadas.v1";
       const DB_CANCIONES = "concienciate-canciones";
@@ -1106,6 +1108,7 @@
         colaCanciones = [];
         indiceCancion = -1;
         fraseMesaActual = "";
+        pausaInterna = true;
         audioMesa.pause();
         if (urlCancionTemporal) {
           URL.revokeObjectURL(urlCancionTemporal);
@@ -1113,6 +1116,7 @@
         }
         audioMesa.removeAttribute("src");
         audioMesa.load();
+        pausaInterna = false;
         resetearProgreso();
         ocultarPlayer();
       }
@@ -1127,35 +1131,11 @@
       }
 
       function reproducirSonidoSorteo() {
-        if (musicaEstaSonando()) return;
-
-        audioSorteo.currentTime = 0;
-        audioSorteo.volume = 0.45;
-        audioSorteo.play().catch(() => {});
+        return;
       }
 
       function desbloquearAudio() {
-        if (audioDesbloqueado) return;
-        if (musicaEstaSonando()) return;
-
-        audioDesbloqueado = true;
-        audioSorteo.volume = 0.08;
-
-        const intento = audioSorteo.play();
-
-        if (intento?.then) {
-          intento
-            .then(() => {
-              setTimeout(() => {
-                audioSorteo.pause();
-                audioSorteo.currentTime = 0;
-                audioSorteo.volume = 0.45;
-              }, 120);
-            })
-            .catch(() => {
-              audioDesbloqueado = false;
-            });
-        }
+        return;
       }
 
       function actualizarPlayer(cancion = null) {
@@ -1189,6 +1169,8 @@
 
         detenerSorteo();
         cancionActual = cancion;
+        usuarioPausoMusica = false;
+        pausaInterna = true;
         audioMesa.pause();
         if (urlCancionTemporal) {
           URL.revokeObjectURL(urlCancionTemporal);
@@ -1203,6 +1185,7 @@
         audioMesa.currentTime = 0;
         audioMesa.volume = 1;
         resetearProgreso();
+        pausaInterna = false;
         audioMesa
           .play()
           .then(() => {
@@ -1260,6 +1243,7 @@
         if (!cancionActual || !audioMesa.src) return;
 
         if (audioMesa.paused) {
+          usuarioPausoMusica = false;
           audioMesa
             .play()
             .then(() => {
@@ -1267,9 +1251,43 @@
             })
             .catch(() => {});
         } else {
+          usuarioPausoMusica = true;
           audioMesa.pause();
           playBtn.textContent = "▶";
         }
+      }
+
+      function asegurarMusicaActiva() {
+        if (!cancionActual) return;
+        if (!audioMesa.src) return;
+        if (audioMesa.ended) return;
+        if (!audioMesa.paused) return;
+        if (usuarioPausoMusica || pausaInterna || protegiendoMusica) return;
+
+        protegiendoMusica = true;
+
+        setTimeout(() => {
+          if (
+            cancionActual &&
+            audioMesa.src &&
+            audioMesa.paused &&
+            !audioMesa.ended &&
+            !usuarioPausoMusica &&
+            !pausaInterna
+          ) {
+            audioMesa.play().catch(() => {});
+          }
+
+          protegiendoMusica = false;
+        }, 90);
+      }
+
+      function vigilarMusicaDuranteAsignacion() {
+        asegurarMusicaActiva();
+        setTimeout(asegurarMusicaActiva, 250);
+        setTimeout(asegurarMusicaActiva, 700);
+        setTimeout(asegurarMusicaActiva, 1350);
+        setTimeout(asegurarMusicaActiva, 2100);
       }
 
       function formatearListaMesas(lista) {
@@ -1407,6 +1425,7 @@
 
         dice.classList.add("rolling");
         reproducirSonidoSorteo();
+        vigilarMusicaDuranteAsignacion();
 
         const pasos = ["3", "2", "1", "🎲"];
         let indicePaso = 0;
@@ -1507,6 +1526,7 @@
       });
       audioMesa.addEventListener("pause", () => {
         playBtn.textContent = "▶";
+        asegurarMusicaActiva();
       });
       progressRange.addEventListener("input", () => {
         if (!audioMesa.duration) return;
