@@ -381,6 +381,36 @@
         cursor: pointer;
       }
 
+      .song-loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 4px auto 10px;
+        color: rgba(18, 51, 95, 0.72);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .song-loader input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .song-loader-btn {
+        border: 1px solid rgba(18, 51, 95, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.82);
+        color: var(--azul);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 900;
+        padding: 7px 10px;
+      }
+
       .meta {
         font-size: clamp(16px, 1.7vw, 22px);
         color: rgba(18, 51, 95, 0.82);
@@ -643,6 +673,17 @@
           </div>
         </div>
 
+        <label class="song-loader">
+          <span class="song-loader-btn">AÑADIR CANCIONES</span>
+          <span id="songLoaderStatus">Carpeta canciones</span>
+          <input
+            id="songFiles"
+            type="file"
+            accept="audio/mpeg,audio/mp3,.mp3"
+            multiple
+          />
+        </label>
+
         <button class="btn" id="btn" onclick="tap()">ASIGNAR MESA</button>
 
         <div class="meta" id="restantes"></div>
@@ -675,10 +716,15 @@
       let colaCanciones = [];
       let indiceCancion = -1;
       let cancionActual = null;
+      let cancionesUsuario = [];
+      let urlCancionTemporal = "";
       let sesionAudio = 0;
       let audioDesbloqueado = false;
       let fraseMesaActual = "";
       const CLAVE_CANCIONES_USADAS = "concienciate.cancionesUsadas.v1";
+      const DB_CANCIONES = "concienciate-canciones";
+      const DB_VERSION = 1;
+      const STORE_CANCIONES = "canciones";
 
       const dice = document.getElementById("dice");
       const mesaEl = document.getElementById("mesa");
@@ -699,6 +745,8 @@
       const progressRange = document.getElementById("progressRange");
       const currentTimeEl = document.getElementById("currentTime");
       const durationTimeEl = document.getElementById("durationTime");
+      const songFiles = document.getElementById("songFiles");
+      const songLoaderStatus = document.getElementById("songLoaderStatus");
 
       const CANCIONES = [
         "canciones/Aerosmith - I Don't Want to Miss a Thing .mp3",
@@ -818,8 +866,6 @@
         fraseAudioEl.textContent = "";
         fraseAudioEl.classList.remove("show");
         msgEl.removeAttribute("style");
-        detenerMusica();
-        ocultarPlayer();
 
         dice.classList.remove("rolling");
 
@@ -890,11 +936,104 @@
         durationTimeEl.textContent = "0:00";
       }
 
+      function abrirBaseCanciones() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(DB_CANCIONES, DB_VERSION);
+
+          request.onupgradeneeded = () => {
+            request.result.createObjectStore(STORE_CANCIONES, {
+              keyPath: "id",
+            });
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      function leerCancionesGuardadas(db) {
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_CANCIONES, "readonly");
+          const request = tx.objectStore(STORE_CANCIONES).getAll();
+
+          request.onsuccess = () => resolve(request.result || []);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      function guardarCancionUsuario(db, cancion) {
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_CANCIONES, "readwrite");
+          const request = tx.objectStore(STORE_CANCIONES).put(cancion);
+
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async function cargarCancionesUsuario() {
+        try {
+          const db = await abrirBaseCanciones();
+          cancionesUsuario = (await leerCancionesGuardadas(db)).sort((a, b) =>
+            a.titulo.localeCompare(b.titulo),
+          );
+          db.close();
+        } catch {
+          cancionesUsuario = [];
+        }
+
+        actualizarEstadoCanciones();
+      }
+
+      function actualizarEstadoCanciones() {
+        const extra = cancionesUsuario.length;
+        songLoaderStatus.textContent = extra
+          ? `${extra} añadidas`
+          : "Carpeta canciones";
+      }
+
+      async function anadirCancionesSeleccionadas(evento) {
+        const archivos = [...evento.target.files].filter((archivo) =>
+          /\.mp3$/i.test(archivo.name),
+        );
+
+        if (!archivos.length) return;
+
+        songLoaderStatus.textContent = "Guardando...";
+
+        try {
+          const db = await abrirBaseCanciones();
+
+          for (const archivo of archivos) {
+            await guardarCancionUsuario(db, {
+              id: `subida/${archivo.name}`,
+              titulo: limpiarNombreCancion(archivo.name),
+              blob: archivo,
+            });
+          }
+
+          db.close();
+          await cargarCancionesUsuario();
+          prepararColaCanciones(cancionActual?.ruta || "");
+        } catch {
+          songLoaderStatus.textContent = "No se pudo guardar";
+        } finally {
+          evento.target.value = "";
+        }
+      }
+
       function obtenerTodasLasCanciones() {
-        return CANCIONES.map((ruta) => ({
+        const cancionesCarpeta = CANCIONES.map((ruta) => ({
           ruta,
           titulo: limpiarNombreCancion(ruta),
         }));
+
+        const cancionesAnadidas = cancionesUsuario.map((cancion) => ({
+          ruta: cancion.id,
+          titulo: cancion.titulo,
+          blob: cancion.blob,
+        }));
+
+        return [...cancionesCarpeta, ...cancionesAnadidas];
       }
 
       function mezclar(lista) {
@@ -968,10 +1107,18 @@
         indiceCancion = -1;
         fraseMesaActual = "";
         audioMesa.pause();
+        if (urlCancionTemporal) {
+          URL.revokeObjectURL(urlCancionTemporal);
+          urlCancionTemporal = "";
+        }
         audioMesa.removeAttribute("src");
         audioMesa.load();
         resetearProgreso();
         ocultarPlayer();
+      }
+
+      function musicaEstaSonando() {
+        return Boolean(cancionActual && !audioMesa.paused && !audioMesa.ended);
       }
 
       function detenerSorteo() {
@@ -979,8 +1126,17 @@
         audioSorteo.currentTime = 0;
       }
 
+      function reproducirSonidoSorteo() {
+        if (musicaEstaSonando()) return;
+
+        audioSorteo.currentTime = 0;
+        audioSorteo.volume = 0.45;
+        audioSorteo.play().catch(() => {});
+      }
+
       function desbloquearAudio() {
         if (audioDesbloqueado) return;
+        if (musicaEstaSonando()) return;
 
         audioDesbloqueado = true;
         audioSorteo.volume = 0.08;
@@ -1034,7 +1190,16 @@
         detenerSorteo();
         cancionActual = cancion;
         audioMesa.pause();
-        audioMesa.src = encodeURI(cancion.ruta);
+        if (urlCancionTemporal) {
+          URL.revokeObjectURL(urlCancionTemporal);
+          urlCancionTemporal = "";
+        }
+        if (cancion.blob) {
+          urlCancionTemporal = URL.createObjectURL(cancion.blob);
+          audioMesa.src = urlCancionTemporal;
+        } else {
+          audioMesa.src = encodeURI(cancion.ruta);
+        }
         audioMesa.currentTime = 0;
         audioMesa.volume = 1;
         resetearProgreso();
@@ -1241,9 +1406,7 @@
         fraseAudioEl.classList.remove("show");
 
         dice.classList.add("rolling");
-        audioSorteo.currentTime = 0;
-        audioSorteo.volume = 0.45;
-        audioSorteo.play().catch(() => {});
+        reproducirSonidoSorteo();
 
         const pasos = ["3", "2", "1", "🎲"];
         let indicePaso = 0;
@@ -1352,8 +1515,9 @@
           (Number(progressRange.value) / 100) * audioMesa.duration;
         actualizarProgreso();
       });
+      songFiles.addEventListener("change", anadirCancionesSeleccionadas);
 
-      reiniciar();
+      cargarCancionesUsuario().then(reiniciar);
     </script>
   </body>
 </html>
